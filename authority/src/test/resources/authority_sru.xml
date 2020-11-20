@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<srw:searchRetrieveResponse xmlns:srw="http://www.loc.gov/zing/srw/" xmlns:xcql="http://www.loc.gov/zing/cql/xcql/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:marc="info:lc/xmlns/marcxchange-v1" xmlns:marcxml="http://www.loc.gov/MARC21/slim">
+  <srw:version>1.2</srw:version>
+  <srw:numberOfRecords>1</srw:numberOfRecords><srw:records><srw:record><srw:recordSchema>marcxchange</srw:recordSchema>
+  <srw:recordPacking>xml</srw:recordPacking>
+  <srw:recordIdentifier>90061718</srw:recordIdentifier><srw:recordPosition>1</srw:recordPosition><srw:recordData>
+    <marc:record format="MARC21" type="Authority" id="90061718" xmlns:marc="info:lc/xmlns/marcxchange-v1">
+      <marc:leader>99999nz  a2299999n  4500</marc:leader>
+      <marc:controlfield tag="001">90061718</marc:controlfield>
+      <marc:controlfield tag="003">NO-TrBIB</marc:controlfield>
+      <marc:controlfield tag="005">20200608152557.0</marc:controlfield>
+      <marc:controlfield tag="008">150605n| adz|naabn|         |a|ana|     </marc:controlfield>
+      <marc:datafield tag="024" ind1="7" ind2=" ">
+        <marc:subfield code="a">x90061718</marc:subfield>
+        <marc:subfield code="2">NO-TrBIB</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="024" ind1="7" ind2=" ">
+        <marc:subfield code="a">http://hdl.handle.net/11250/2339503</marc:subfield>
+        <marc:subfield code="2">hdl</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="024" ind1="7" ind2=" ">
+        <marc:subfield code="a">0000000121385710</marc:subfield>
+        <marc:subfield code="2">isni</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="024" ind1="7" ind2=" ">
+        <marc:subfield code="a">http://viaf.org/viaf/71378383</marc:subfield>
+        <marc:subfield code="2">viaf</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="024" ind1="7" ind2=" ">
+        <marc:subfield code="a">17908</marc:subfield>
+        <marc:subfield code="2">bibbi</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="040" ind1=" " ind2=" ">
+        <marc:subfield code="a">NO-TrBIB</marc:subfield>
+        <marc:subfield code="b">nob</marc:subfield>
+        <marc:subfield code="c">NO-TrBIB</marc:subfield>
+        <marc:subfield code="f">noraf</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="043" ind1=" " ind2=" ">
+        <marc:subfield code="c">no</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="100" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Henrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="375" ind1=" " ind2=" ">
+        <marc:subfield code="a">m</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="386" ind1=" " ind2=" ">
+        <marc:subfield code="a">n.</marc:subfield>
+        <marc:subfield code="m">Nasjonalitet/regional gruppe</marc:subfield>
+        <marc:subfield code="2">bs-nasj</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Bjarme, Brynjolf</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibzen, Chenrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Genrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ipusen, Henrikku</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Henr.</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="3" ind2=" ">
+        <marc:subfield code="a">Yibusheng</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Yì bo shēng</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Enrico</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsenŭ, Chenrikŭ</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Hendrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">I-pu-sheng</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Henrik Johan</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsin, Hinrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">ابسن, هنريك</marc:subfield>
+        <marc:subfield code="d">1828-1906-</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Henryk</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Yi bu sheng</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Yibusheng</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">易卜生</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsens, Henriks</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ipsen, Errikou</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Henrick</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ipusen</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibseni, Henrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">イプセン, ヘンリック</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">イブセン</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">איבסן, הנריק</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsen, Henrikos</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Իբսէն, Հենրիկոս</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Eîbsin, Hênrîk</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">ﺋﯾﺑﺳن  ھﻧرﯾﮏ</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">Ibsin, Hanrik</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="400" ind1="1" ind2=" ">
+        <marc:subfield code="a">إبسن , هنريك</marc:subfield>
+        <marc:subfield code="d">1828-1906</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="678" ind1=" " ind2=" ">
+        <marc:subfield code="a">Skrev også under psevdonymet Brynjolf Bjarme</marc:subfield>
+      </marc:datafield>
+      <marc:datafield tag="901" ind1=" " ind2=" ">
+        <marc:subfield code="a">kat3</marc:subfield>
+      </marc:datafield>
+    </marc:record></srw:recordData>
+</srw:record></srw:records><srw:echoedSearchRetrieveRequest>
+  <srw:operation>searchRetrieve</srw:operation>
+  <srw:version> 1.2</srw:version>
+  <srw:query>rec.identifier=90061718</srw:query>
+  <srw:startRecord>1</srw:startRecord>
+  <srw:maximumRecords>10</srw:maximumRecords>
+  <srw:recordPacking>xml</srw:recordPacking>
+  <srw:recordSchema>marcxchange</srw:recordSchema>
+</srw:echoedSearchRetrieveRequest>
+  <srw:extraResponseData>
+    <responseDate>2020-11-20T12:33:16Z</responseDate></srw:extraResponseData>
+</srw:searchRetrieveResponse>

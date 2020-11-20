@@ -6,15 +6,10 @@ public class Config {
 
     public static final String MISSING_ENVIRONMENT_VARIABLES = "Missing environment variables";
     public static final String CORS_ALLOW_ORIGIN_HEADER_ENVIRONMENT_NAME = "ALLOWED_ORIGIN";
-    public static final String BARE_APIKEY_KEY = "BARE_API_KEY";
-    public static final String BARE_HOST_KEY = "BARE_HOST";
-    public static final String BARE_QUERY_PATH = "/authority/rest/functions/v2/query";
-    public static final String BARE_CREATE_PATH = "/authority/rest/authorities/v2";
-    public static final String BARE_GET_PATH = "/authority/rest/authorities/v2";
+    public static final String AUTHORITY_SRU_HOST = "AUTHORITY_SRU_HOST";
+    private String authoritySruHost = "authority.bibsys.no/authority/rest/sru";
 
-    private String bareApikey;
     private String corsHeader;
-    private String bareHost;
 
 
     private Config() {
@@ -25,8 +20,7 @@ public class Config {
         private static final Config INSTANCE = new Config();
 
         static {
-            INSTANCE.setBareApikey(System.getenv(BARE_APIKEY_KEY));
-            INSTANCE.setBareHost(System.getenv(BARE_HOST_KEY));
+            INSTANCE.setAuthoritySruHost(System.getenv(AUTHORITY_SRU_HOST));
             INSTANCE.setCorsHeader(System.getenv(CORS_ALLOW_ORIGIN_HEADER_ENVIRONMENT_NAME));
         }
     }
@@ -41,26 +35,18 @@ public class Config {
      * @return true if both properties are present.
      */
     public boolean checkProperties() {
-        if (StringUtils.isEmpty(bareHost) || StringUtils.isEmpty(bareApikey)) {
+        if (StringUtils.isEmpty(authoritySruHost)) {
             throw new RuntimeException(MISSING_ENVIRONMENT_VARIABLES);
         }
         return true;
     }
 
-    public String getBareHost() {
-        return bareHost;
+    public String getAuthoritySruHost() {
+        return authoritySruHost;
     }
 
-    public void setBareHost(String bareHost) {
-        this.bareHost = bareHost;
-    }
-
-    public String getBareApikey() {
-        return bareApikey;
-    }
-
-    public void setBareApikey(String bareApikey) {
-        this.bareApikey = bareApikey;
+    public void setAuthoritySruHost(String authoritySruHost) {
+        this.authoritySruHost = authoritySruHost;
     }
 
     public String getCorsHeader() {

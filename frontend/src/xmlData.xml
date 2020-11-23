@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record xmlns="http://www.loc.gov/MARC21/slim">
+          <leader>02122nas-a2200541-a-4500</leader>
+          <controlfield tag="001">999919897183302201</controlfield>
+          <controlfield tag="005">20200910145055.0</controlfield>
+          <controlfield tag="006">m-----o--d--------</controlfield>
+          <controlfield tag="007">cr-|||||||||||</controlfield>
+          <controlfield tag="008">001213c19989999mauqr-p-o-----0---a0eng-c</controlfield>
+          <datafield ind1=" " ind2=" " tag="010">
+            <subfield code="a">00213343</subfield>
+          </datafield>
+          <datafield ind1="7" ind2=" " tag="016">
+            <subfield code="a">2070928-6</subfield>
+            <subfield code="2">DE-600</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="022">
+            <subfield code="a">1532-8937</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(OCoLC)45555110</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(CKB)110985821000953</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(CONSER)---00213343-</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(DE-599)ZDB2070928-6</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="035">
+            <subfield code="a">(EXLCZ)99110985821000953</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="037">
+            <subfield code="b">Sloan Management Review Assoc., MIT Sloan School of Management, 77 Mass. Ave., E60-100, Cambridge, MA 02139-4307</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="042">
+            <subfield code="a">nsdp</subfield>
+            <subfield code="a">pcc</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="4" tag="050">
+            <subfield code="a">HD28</subfield>
+            <subfield code="b">.I14</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="4" tag="060">
+            <subfield code="a">W1</subfield>
+            <subfield code="b">SL585</subfield>
+          </datafield>
+          <datafield ind1="0" ind2=" " tag="130">
+            <subfield code="a">MIT Sloan management review (Online)</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="0" tag="222">
+            <subfield code="a">MIT Sloan management review</subfield>
+            <subfield code="b">(Online)</subfield>
+          </datafield>
+          <datafield ind1="1" ind2="0" tag="245">
+            <subfield code="a">MIT Sloan management review.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="260">
+            <subfield code="a">Cambridge, Mass. :</subfield>
+            <subfield code="b">Sloan Management Review Association :</subfield>
+            <subfield code="b">MIT Sloan School of Management,</subfield>
+            <subfield code="c">©1998-</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="310">
+            <subfield code="a">Quarterly</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="336">
+            <subfield code="a">text</subfield>
+            <subfield code="b">txt</subfield>
+            <subfield code="2">rdacontent</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="337">
+            <subfield code="a">computer</subfield>
+            <subfield code="b">c</subfield>
+            <subfield code="2">rdamedia</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="338">
+            <subfield code="a">online resource</subfield>
+            <subfield code="b">cr</subfield>
+            <subfield code="2">rdacarrier</subfield>
+          </datafield>
+          <datafield ind1="1" ind2=" " tag="362">
+            <subfield code="a">Print began with vol. 39, no. 2 (winter 1998).</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="538">
+            <subfield code="a">Mode of access: World Wide Web.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="588">
+            <subfield code="a">Description based on: Vol. 42, no. 2 (winter 2001); title from contents screen (viewed Feb. 22, 2001).</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="588">
+            <subfield code="a">Latest issue consulted: Vol. 53, issue 4 (summer 2012) (publisher's Web site, viewed Sept. 6, 2012).</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="500">
+            <subfield code="a">Refereed/Peer-reviewed</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="0" tag="650">
+            <subfield code="a">Industrial management</subfield>
+            <subfield code="v">Periodicals.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="6" tag="650">
+            <subfield code="a">Gestion d'entreprise</subfield>
+            <subfield code="v">Périodiques.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="7" tag="650">
+            <subfield code="a">Industrial management.</subfield>
+            <subfield code="2">fast</subfield>
+            <subfield code="0">(OCoLC)fst00971246</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="7" tag="650">
+            <subfield code="a">HW_HRM</subfield>
+            <subfield code="2">less</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="2" tag="650">
+            <subfield code="a">Organization and Administration</subfield>
+            <subfield code="v">Periodicals.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="0" tag="655">
+            <subfield code="a">Electronic journals.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="7" tag="655">
+            <subfield code="a">Periodicals.</subfield>
+            <subfield code="2">fast</subfield>
+            <subfield code="0">(OCoLC)fst01411641</subfield>
+          </datafield>
+          <datafield ind1=" " ind2="7" tag="655">
+            <subfield code="a">Electronic journals.</subfield>
+            <subfield code="2">lcgft</subfield>
+          </datafield>
+          <datafield ind1="2" ind2=" " tag="710">
+            <subfield code="a">Sloan Management Review Association.</subfield>
+          </datafield>
+          <datafield ind1="2" ind2=" " tag="710">
+            <subfield code="a">Sloan School of Management.</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="776">
+            <subfield code="x">1532-9194</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="0" tag="780">
+            <subfield code="a">Sloan Managment Review</subfield>
+            <subfield code="w">71520959810002201</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="0" tag="780">
+            <subfield code="t">Sloan Management Review</subfield>
+            <subfield code="w">(CKB)954921345212</subfield>
+            <subfield code="w">(DLC)73612734</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HIOA</subfield>
+            <subfield code="6">999919791457202212</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_NLA</subfield>
+            <subfield code="6">999919740902902228</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_DIASYK</subfield>
+            <subfield code="6">999919632496602265</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_MH</subfield>
+            <subfield code="6">999919669363202296</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_NBANK</subfield>
+            <subfield code="6">999919659349102250</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HVO</subfield>
+            <subfield code="6">999919714370002220</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_NTNU_UB</subfield>
+            <subfield code="6">999919780264202203</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HIT</subfield>
+            <subfield code="6">999919707296002210</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_AHUS</subfield>
+            <subfield code="6">999919716153902263</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_UBIN</subfield>
+            <subfield code="6">999919716277402211</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HIM</subfield>
+            <subfield code="6">999919698029602223</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HIO</subfield>
+            <subfield code="6">999919717362402218</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_NHHB</subfield>
+            <subfield code="6">999919699445302216</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_TELSYK</subfield>
+            <subfield code="6">999919018589202298</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_UBIS</subfield>
+            <subfield code="6">999919719393202208</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HH</subfield>
+            <subfield code="6">999919727135602214</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_HIB</subfield>
+            <subfield code="6">999919728299602221</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_UBA</subfield>
+            <subfield code="6">999919726541802209</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_MOLDESYK</subfield>
+            <subfield code="6">999919295649302293</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_UBB</subfield>
+            <subfield code="6">999919741926702207</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_BI</subfield>
+            <subfield code="6">999919714326402215</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_RBUP_OS</subfield>
+            <subfield code="6">999919658524302276</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_UBTO</subfield>
+            <subfield code="6">999919787334802205</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_DEPSS</subfield>
+            <subfield code="6">999919666309502253</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1="0" ind2="1" tag="852">
+            <subfield code="a">47BIBSYS_FHS</subfield>
+            <subfield code="6">999919792203402275</subfield>
+            <subfield code="9">E</subfield>
+          </datafield>
+          <datafield ind1=" " ind2=" " tag="906">
+            <subfield code="a">JOURNAL</subfield>
+          </datafield>
+        </record>

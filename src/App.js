@@ -6,130 +6,98 @@ import Button from "@material-ui/core/Button";
 function App() {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
   const theText =
-    '<?xml version="1.0" encoding="UTF-8"?> \
-  <record xmlns="http://www.loc.gov/MARC21/slim"> \
-    <leader>02122nas-a2200541-a-4500</leader> \
-    <controlfield tag="001">999919897183302201</controlfield> \
-    <controlfield tag="005">20200910145055.0</controlfield> \
-    <controlfield tag="006">m-----o--d--------</controlfield> \
-    <controlfield tag="007">cr-|||||||||||</controlfield> \
-    <controlfield tag="008">001213c19989999mauqr-p-o-----0---a0eng-c</controlfield> \
-    <datafield ind1=" " ind2=" " tag="010"> \
-      <subfield code="a">00213343</subfield> \
-    </datafield> \
-    <datafield ind1="7" ind2=" " tag="016"> \
-      <subfield code="a">2070928-6</subfield> \
-      <subfield code="2">DE-600</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="022"> \
-      <subfield code="a">1532-8937</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="035"> \
-      <subfield code="a">(OCoLC)45555110</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="035"> \
-      <subfield code="a">(CKB)110985821000953</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="035"> \
-      <subfield code="a">(CONSER)---00213343-</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="035"> \
-      <subfield code="a">(DE-599)ZDB2070928-6</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="035"> \
-      <subfield code="a">(EXLCZ)99110985821000953</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="037"> \
-      <subfield code="b">Sloan Management Review Assoc., MIT Sloan School of Management, 77 Mass. Ave., E60-100, Cambridge, MA 02139-4307</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="042"> \
-      <subfield code="a">nsdp</subfield> \
-      <subfield code="a">pcc</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2="4" tag="050"> \
-      <subfield code="a">HD28</subfield> \
-      <subfield code="b">.I14</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2="4" tag="060"> \
-      <subfield code="a">W1</subfield> \
-      <subfield code="b">SL585</subfield> \
-    </datafield> \
-    <datafield ind1="0" ind2=" " tag="130"> \
-      <subfield code="a">MIT Sloan management review (Online)</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2="0" tag="222"> \
-      <subfield code="a">MIT Sloan management review</subfield> \
-      <subfield code="b">(Online)</subfield> \
-    </datafield> \
-    <datafield ind1="1" ind2="0" tag="245"> \
-      <subfield code="a">MIT Sloan management review.</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="260"> \
-      <subfield code="a">Cambridge, Mass. :</subfield> \
-      <subfield code="b">Sloan Management Review Association :</subfield> \
-      <subfield code="b">MIT Sloan School of Management,</subfield> \
-      <subfield code="c">©1998-</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="310"> \
-      <subfield code="a">Quarterly</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="336"> \
-      <subfield code="a">text</subfield> \
-      <subfield code="b">txt</subfield> \
-      <subfield code="2">rdacontent</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="337"> \
-      <subfield code="a">computer</subfield> \
-      <subfield code="b">c</subfield> \
-      <subfield code="2">rdamedia</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="338"> \
-      <subfield code="a">online resource</subfield> \
-      <subfield code="b">cr</subfield> \
-      <subfield code="2">rdacarrier</subfield> \
-    </datafield> \
-    <datafield ind1="1" ind2=" " tag="362"> \
-      <subfield code="a">Print began with vol. 39, no. 2 (winter 1998).</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="538"> \
-      <subfield code="a">Mode of access: World Wide Web.</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="588"> \
-      <subfield code="a">Description based on: Vol. 42, no. 2 (winter 2001); title from contents screen (viewed Feb. 22, 2001).</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="588"> \
-      <subfield code="a">Latest issue consulted: Vol. 53, issue 4 (summer 2012) (publishers Web site, viewed Sept. 6, 2012).</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="500"> \
-      <subfield code="a">Refereed/Peer-reviewed</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2="0" tag="650"> \
-      <subfield code="a">Industrial management</subfield> \
-      <subfield code="v">Periodicals.</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2="6" tag="650"> \
-      <subfield code="a">Gestion dentreprise</subfield> \
-      <subfield code="v">Périodiques.</subfield> \
-    </datafield> \
-    <datafield ind1="0" ind2="1" tag="852"> \
-      <subfield code="a">47BIBSYS_UBTO</subfield> \
-      <subfield code="6">999919787334802205</subfield> \
-      <subfield code="9">E</subfield> \
-    </datafield> \
-    <datafield ind1="0" ind2="1" tag="852"> \
-      <subfield code="a">47BIBSYS_DEPSS</subfield> \
-      <subfield code="6">999919666309502253</subfield> \
-      <subfield code="9">E</subfield> \
-    </datafield> \
-    <datafield ind1="0" ind2="1" tag="852"> \
-      <subfield code="a">47BIBSYS_FHS</subfield> \
-      <subfield code="6">999919792203402275</subfield> \
-      <subfield code="9">E</subfield> \
-    </datafield> \
-    <datafield ind1=" " ind2=" " tag="906"> \
-      <subfield code="a">JOURNAL</subfield> \
-    </datafield> \
-  </record>';
+    '<?xml version="1.0" encoding="UTF-8"?>\
+<record xmlns="http://www.loc.gov/MARC21/slim">\
+          <leader>01044cam a2200301 c 4500</leader>\
+          <controlfield tag="001">991325803064702201</controlfield>\
+          <controlfield tag="005">20160622160726.0</controlfield>\
+          <controlfield tag="007">ta</controlfield>\
+          <controlfield tag="008">141124s2013    no#||||j||||||000|0|nob|^</controlfield>\
+          <datafield ind1=" " ind2=" " tag="015">\
+            <subfield code="a">1337755</subfield>\
+            <subfield code="2">nbf</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="020">\
+            <subfield code="a">9788210053412</subfield>\
+            <subfield code="q">ib.</subfield>\
+            <subfield code="c">Nkr 249.00</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="035">\
+            <subfield code="a">132580306-47bibsys_network</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="035">\
+            <subfield code="a">(NO-TrBIB)132580306</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="035">\
+            <subfield code="a">(NO-OsBA)0370957</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="040">\
+            <subfield code="a">NO-OsNB</subfield>\
+            <subfield code="b">nob</subfield>\
+            <subfield code="e">katreg</subfield>\
+          </datafield>\
+          <datafield ind1="1" ind2=" " tag="041">\
+            <subfield code="h">eng</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="042">\
+            <subfield code="a">norbibl</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="044">\
+            <subfield code="c">no</subfield>\
+          </datafield>\
+          <datafield ind1="7" ind2="4" tag="082">\
+            <subfield code="a">791.4372</subfield>\
+            <subfield code="q">NO-OsNB</subfield>\
+            <subfield code="2">5/nor</subfield>\
+          </datafield>\
+          <datafield ind1="1" ind2=" " tag="100">\
+            <subfield code="a">Fisher, Jude</subfield>\
+            <subfield code="0">(NO-TrBIB)1093967</subfield>\
+          </datafield>\
+          <datafield ind1="1" ind2="0" tag="245">\
+            <subfield code="a">Hobbiten :</subfield>\
+            <subfield code="b">Smaugs ødemark i bilder</subfield>\
+            <subfield code="c">Jude Fisher ; oversatt fra engelsk av Camilla Eikeland-Sandnes</subfield>\
+          </datafield>\
+          <datafield ind1="1" ind2=" " tag="246">\
+            <subfield code="a">The Hobbit</subfield>\
+            <subfield code="b">the desolation of Smaug visual companion</subfield>\
+            <subfield code="i">Originaltittel</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="260">\
+            <subfield code="a">Oslo</subfield>\
+            <subfield code="b">Tiden</subfield>\
+            <subfield code="c">2013</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="300">\
+            <subfield code="a">75 s.</subfield>\
+            <subfield code="b">ill.</subfield>\
+            <subfield code="c">28 cm</subfield>\
+          </datafield>\
+          <datafield ind1="1" ind2=" " tag="700">\
+            <subfield code="a">Eikeland-Sundnes, Camilla</subfield>\
+            <subfield code="d">1978-</subfield>\
+            <subfield code="4">trl</subfield>\
+            <subfield code="0">(NO-TrBIB)10061339</subfield>\
+          </datafield>\
+          <datafield ind1="4" ind2="2" tag="856">\
+            <subfield code="3">Beskrivelse fra forlaget (kort)</subfield>\
+            <subfield code="u">http://content.bibsys.no/content/?type=descr_publ_brief&amp;isbn=8210053418</subfield>\
+          </datafield>\
+          <datafield ind1="0" ind2="1" tag="852">\
+            <subfield code="a">47BIBSYS_NB</subfield>\
+            <subfield code="6">991325803064702202</subfield>\
+            <subfield code="9">D</subfield>\
+            <subfield code="9">P</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="901">\
+            <subfield code="a">90</subfield>\
+          </datafield>\
+          <datafield ind1=" " ind2=" " tag="913">\
+            <subfield code="a">Norbok</subfield>\
+            <subfield code="b">NB</subfield>\
+          </datafield>\
+        </record>';
 
   const showXML = (event) => {
     setShowXMLPressed(true);

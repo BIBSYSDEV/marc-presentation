@@ -45,13 +45,13 @@ const DataDisplay: FC = (props: any) => {
           let ind1 = "#";
           if (theNode.getAttribute("ind1") != null) {
               if (theNode.getAttribute("ind1") != " ") {
-                ind1 = theNode.getAttribute("ind1");
+                ind1 = theNode.getAttribute("ind1")!.toString();
               }
           }
           let ind2 = "#";
           if (theNode.getAttribute("ind2") != null) {
               if (theNode.getAttribute("ind2") != " ") {
-                ind2 = theNode.getAttribute("ind2");
+                ind2 = theNode.getAttribute("ind2")!.toString();
               }
           }
           if (theNode.getAttribute("tag") != null) {

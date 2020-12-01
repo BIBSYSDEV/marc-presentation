@@ -43,13 +43,13 @@ const DataDisplay: FC = (props: any) => {
         let theNode = parentNode.childNodes[i].parentElement;
         if (theNode) {
           let ind1 = "#";
-          if (theNode.getAttribute("ind1") != null &&
-              theNode.getAttribute("ind1") != " ") {
+          if ((theNode.getAttribute("ind1") != null) &&
+              (theNode.getAttribute("ind1") != " ")) {
             ind1 = theNode.getAttribute("ind1");
           }
           let ind2 = "#";
-          if (theNode.getAttribute("ind2") != null &&
-              theNode.getAttribute("ind2") != " ") {
+          if ((theNode.getAttribute("ind2") != null) &&
+              (theNode.getAttribute("ind2") != " ")) {
             ind2 = theNode.getAttribute("ind2");
           }
           if (theNode.getAttribute("tag") != null) {

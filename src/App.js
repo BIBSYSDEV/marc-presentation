@@ -3,7 +3,9 @@ import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
 import Button from "@material-ui/core/Button";
 
-const almaSruUrl = 'https://bibsys.alma.exlibrisgroup.com/view/sru/47BIBSYS_NETWORK?operation=searchRetrieve&version=1.2&query=alma.mms_id="991325803064702201"';
+//const almaSruUrl = 'https://bibsys.alma.exlibrisgroup.com/view/sru/47BIBSYS_NETWORK?operation=searchRetrieve&version=1.2&query=alma.mms_id="991325803064702201"';
+const almaSruUrl = 'https://6kdv0kt7h3.execute-api.eu-west-1.amazonaws.com/dev/alma?mms_id="991325803064702201"';
+const authoritySruUrl = 'https://authority.bibsys.no/authority/rest/sru?operation=searchRetrieve&version=1.2&query=rec.identifier="1093967"';
 
 function App() {
   const [showXMLPressed, setShowXMLPressed] = useState(true);

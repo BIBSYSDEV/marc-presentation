@@ -20,9 +20,18 @@ const DataDisplay: FC = (props: any) => {
       const transformer = format;
 
       useEffect(() => {
+        function extractRecord(rawXml: String) {
+          let rec = rawXml.replaceAll("marc:", "");
+          let recordStartIndex = rec.indexOf("<record format=\"MARC21\"");
+          let recordEndIndex = rec.indexOf("</record>");
+          rec = rec.slice(recordStartIndex, recordEndIndex);
+          return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
+        }
+
         if (props.inputText !== "") {
+          let xmlRec = extractRecord(props.inputText);
           setFileLoaded(true);
-          setXmlData(transformer(props.inputText));
+          setXmlData(transformer(xmlRec));
         }
         setShowAsXML(props.showAsXMLInput);
       }, [props.inputText, props.showAsXMLInput, transformer]);

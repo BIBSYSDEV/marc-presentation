@@ -1,4 +1,5 @@
 import React, {useState, useEffect, FC} from "react";
+import Button from "@material-ui/core/Button";
 import styled from "styled-components";
 import format from "xml-formatter";
 
@@ -111,6 +112,24 @@ const DataDisplay: FC = (props: any) => {
         return returnString;
       }
 
+      const download = () => {
+          let filenameXml = 'marcpresentation.xml';
+          let filenameLineformat = 'marcpresentation.marc';
+          let blob;
+          let elem = window.document.createElement('a');
+          if (showAsXML) {
+              blob = new Blob([showData()], {type: 'application/xml'});
+              elem.download = filenameXml;
+          } else {
+              blob = new Blob([showData()], {type: 'application/marc'});
+              elem.download = filenameLineformat;
+          }
+          elem.href = window.URL.createObjectURL(blob);
+          document.body.appendChild(elem);
+          elem.click();
+          document.body.removeChild(elem);
+      };
+
       const findChildNodeValue = (parentNode: ChildNode | null): string => {
         if (parentNode === null) {
           return "Missing rootnode";
@@ -148,6 +167,13 @@ const DataDisplay: FC = (props: any) => {
                   <h1>Waiting to display data</h1>
               )}
             </DataFieldWrapper>
+            <Button
+                variant="contained"
+                color={"primary"}
+                onClick={download}
+            >
+                Download
+            </Button>
           </>
       );
     }

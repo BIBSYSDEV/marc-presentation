@@ -2,18 +2,31 @@ import React, {useState, useEffect} from "react";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
 import Button from "@material-ui/core/Button";
+import queryString from 'query-string';
 
-//const almaSruUrl = 'https://bibsys.alma.exlibrisgroup.com/view/sru/47BIBSYS_NETWORK?operation=searchRetrieve&version=1.2&query=alma.mms_id="991325803064702201"';
-const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/marc?mms_id="991325803064702201"';
-const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority?auth_id=1093967';
+const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/marc';
+const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
+const queryParams = queryString.parse(window.location.search);
 
 function App() {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
   const [text, setText] = useState('')
 
+  let sruUrl;
+  if (queryParams.auth_id) {
+    sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
+  } else if (queryParams.mms_id) {
+    sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
+    if (queryParams.institution) {
+      sruUrl += "&institution=" + queryParams.institution;
+    }
+  } else {
+    alert("params are missing")
+  }
+
   useEffect(()=>{
 
-    fetch(authoritySruUrl, {
+    fetch(sruUrl, {
       method: 'GET'
     })
     .then(response => {

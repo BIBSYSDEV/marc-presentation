@@ -114,16 +114,14 @@ const DataDisplay: FC = (props: any) => {
       }
 
       const download = () => {
-          let filenameXml = 'marcpresentation.xml';
-          let filenameLineformat = 'marcpresentation.marc';
           let blob;
           let elem = window.document.createElement('a');
           if (showAsXML) {
               blob = new Blob([showData()], {type: 'application/xml'});
-              elem.download = filenameXml;
+              elem.download = 'marcpresentation.xml';
           } else {
-              blob = new Blob([showData()], {type: 'application/marc'});
-              elem.download = filenameLineformat;
+              blob = new Blob([showData()], {type: 'text/plain'});
+              elem.download = 'marcpresentation.txt';
           }
           elem.href = window.URL.createObjectURL(blob);
           document.body.appendChild(elem);

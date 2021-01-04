@@ -21,14 +21,6 @@ const DataDisplay: FC = (props: any) => {
       const transformer = format;
 
       useEffect(() => {
-        function extractRecord(rawXml: String) {
-          let rec = rawXml.replaceAll("marc:", "");
-          let recordStartIndex = rec.indexOf("<record format=\"MARC21\"");
-          let recordEndIndex = rec.indexOf("</record>");
-          rec = rec.slice(recordStartIndex, recordEndIndex);
-          return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
-        }
-
         if (props.inputText !== "") {
           let xmlRec = extractRecord(props.inputText);
           setFileLoaded(true);
@@ -40,6 +32,15 @@ const DataDisplay: FC = (props: any) => {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlData, "text/xml");
       let rootNode = xmlDoc.getElementsByTagName("record").item(0);
+
+
+      function extractRecord(rawXml: String) {
+        let rec = rawXml.replaceAll("marc:", "");
+        let recordStartIndex = rec.indexOf("<record format=\"MARC21\"");
+        let recordEndIndex = rec.indexOf("</record>");
+        rec = rec.slice(recordStartIndex, recordEndIndex);
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
+      }
 
       function extractSubfields(parentNode: ChildNode, j: number) {
         let returnString: string = "";

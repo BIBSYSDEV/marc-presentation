@@ -35,7 +35,7 @@ const DataDisplay: FC = (props: any) => {
 
       function extractRecord(rawXml: String) {
         let rec = rawXml.replaceAll("marc:", "");
-        let recordStartIndex = rec.indexOf("<record format=\"MARC21\"");
+        let recordStartIndex = rec.indexOf("<record ");
         let recordEndIndex = rec.indexOf("</record>");
         rec = rec.slice(recordStartIndex, recordEndIndex);
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;

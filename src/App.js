@@ -4,7 +4,7 @@ import DataDisplay from "./components/DataDisplay.tsx";
 import Button from "@material-ui/core/Button";
 import queryString from 'query-string';
 
-const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/marc';
+const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
 const queryParams = queryString.parse(window.location.search);
 

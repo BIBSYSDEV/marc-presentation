@@ -3,6 +3,7 @@ import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
 import Button from "@material-ui/core/Button";
 import queryString from 'query-string';
+import { getHeaderFieldsFromText } from './parsers'
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
@@ -11,6 +12,7 @@ const queryParams = queryString.parse(window.location.search);
 function App() {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
   const [text, setText] = useState('')
+  const [header, setHeader] = useState('')
 
   let sruUrl;
   if (queryParams.auth_id) {
@@ -37,7 +39,25 @@ function App() {
 
   }, [])
 
-  const showXML = (event) => {
+    useEffect(() => {
+        if(text === "") return
+
+        const headerFields = getHeaderFieldsFromText(text);
+        let headerFromFields = headerFields.maintitle;
+        if(headerFields.maintitle.endsWith(":")) {
+            headerFromFields += " "
+        } else {
+            headerFromFields += " : "
+        }
+        headerFromFields += headerFields.paralleltitle
+            + ", " + headerFields.numberOfPartTitle
+            + " / " + headerFields.statementOfResponsibility
+            + " ♠ " + headerFields.author
+
+        setHeader(headerFromFields.trim());
+    }, [text])
+
+  const showXML = () => {
     setShowXMLPressed(true);
   };
 
@@ -47,6 +67,7 @@ function App() {
 
   return (
       <>
+        <h2>{header}</h2>
         <Button
             variant="contained"
             color={showXMLPressed ? "primary" : "default"}

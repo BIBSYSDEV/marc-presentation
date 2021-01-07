@@ -70,7 +70,7 @@ function App() {
         if (marcData.numberOfPartTitle !== "") headerFromFields += ", " + marcData.numberOfPartTitle
         if (marcData.statementOfResponsibility !== "") headerFromFields += " / " + marcData.statementOfResponsibility
         if (marcData.author !== "") headerFromFields += " ♠ " + marcData.author
-        if (marcData.year !== "") headerFromFields += " - " + marcData.year
+        if (marcData.year !== "") headerFromFields += " (" + marcData.year + ")"
 
         setHeader(headerFromFields.trim());
     }, [marcData])

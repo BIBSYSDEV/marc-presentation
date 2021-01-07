@@ -4,6 +4,7 @@ import DataDisplay from "./components/DataDisplay.tsx";
 import Button from "@material-ui/core/Button";
 import queryString from 'query-string';
 import {isEmpty} from 'lodash';
+import format from "xml-formatter";
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
@@ -13,6 +14,8 @@ function App() {
     const [showXMLPressed, setShowXMLPressed] = useState(true);
     const [marcData, setMarcData] = useState({})
     const [header, setHeader] = useState('')
+
+    const transformer = format;
 
     let sruUrl;
     if (queryParams.auth_id) {
@@ -35,26 +38,39 @@ function App() {
                 return response.text()
             })
             .then(xml => {
+                const xmlRecord = extractRecord(xml);
+                const xmlPresentation = transformer(xmlRecord);
+
                 // TODO Do GET call to new lambda. Mock:
-                mockResponseMarc21XmlParser.xmlPresentation = xml;
+                mockResponseMarc21XmlParser.xmlPresentation = xmlPresentation;
                 setMarcData(mockResponseMarc21XmlParser)
             })
-
     }, [])
+
+    function extractRecord(rawXml) {
+        let rec = rawXml.replaceAll("marc:", "");
+        const recordStartIndex = rec.indexOf("<record ");
+        const recordEndIndex = rec.indexOf("</record>");
+        rec = rec.slice(recordStartIndex, recordEndIndex);
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
+    }
 
     useEffect(() => {
         if (isEmpty(marcData)) return
 
         let headerFromFields = marcData.mainTitle;
-        if (marcData.mainTitle.endsWith(":")) {
-            headerFromFields += " "
-        } else {
-            headerFromFields += " : "
+        if (marcData.parallelTitle !== "") {
+            if (marcData.mainTitle.endsWith(":")) {
+                headerFromFields += " "
+            } else {
+                headerFromFields += " : "
+            }
+            headerFromFields += marcData.parallelTitle
         }
-        headerFromFields += marcData.parallelTitle
         if (marcData.numberOfPartTitle !== "") headerFromFields += ", " + marcData.numberOfPartTitle
         if (marcData.statementOfResponsibility !== "") headerFromFields += " / " + marcData.statementOfResponsibility
         if (marcData.author !== "") headerFromFields += " ♠ " + marcData.author
+        if (marcData.year !== "") headerFromFields += " - " + marcData.year
 
         setHeader(headerFromFields.trim());
     }, [marcData])
@@ -101,6 +117,7 @@ const mockResponseMarc21XmlParser = {
     statementOfResponsibility: "Jude Fisher ; oversatt fra engelsk av Camilla Eikeland-Sandnes",
     numberOfPartTitle: "",
     author: "Fisher, Jude",
+    year: "2013",
     xmlPresentation: "",
     linePresentation: "*ldr 01044cam a2200301 c 4500\n" +
         "*001 991325803064702201\n" +

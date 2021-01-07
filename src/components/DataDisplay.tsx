@@ -1,6 +1,5 @@
 import React, {useState, useEffect, FC} from "react";
 import styled from "styled-components";
-import format from "xml-formatter";
 import {isEmpty} from "lodash";
 
 const DataField = styled.textarea`
@@ -19,25 +18,14 @@ const DataDisplay: FC = (props: any) => {
     const [xmlPresentation, setXmlPresentation] = useState<string>("");
     const [linePresentation, setLinePresentation] = useState<string>("");
 
-    const transformer = format;
-
     useEffect(() => {
         if (!isEmpty(props.marcData)) {
-            let xmlRec = extractRecord(props.marcData.xmlPresentation);
-            setXmlPresentation(transformer(xmlRec));
+            setXmlPresentation(props.marcData.xmlPresentation);
             setLinePresentation(props.marcData.linePresentation)
             setFileLoaded(true);
         }
         setShowAsXML(props.showAsXMLInput);
-    }, [props.marcData, props.showAsXMLInput, transformer]);
-
-    function extractRecord(rawXml: String) {
-        let rec = rawXml.replaceAll("marc:", "");
-        let recordStartIndex = rec.indexOf("<record ");
-        let recordEndIndex = rec.indexOf("</record>");
-        rec = rec.slice(recordStartIndex, recordEndIndex);
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
-    }
+    }, [props.marcData, props.showAsXMLInput]);
 
     const showData = (): string => {
         if (showAsXML) {

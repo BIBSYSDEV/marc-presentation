@@ -3,99 +3,100 @@ import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
 import Button from "@material-ui/core/Button";
 import queryString from 'query-string';
-import { isEmpty } from 'lodash';
+import {isEmpty} from 'lodash';
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
 const queryParams = queryString.parse(window.location.search);
 
 function App() {
-  const [showXMLPressed, setShowXMLPressed] = useState(true);
-  const [marcData, setMarcData] = useState({})
-  const [header, setHeader] = useState('')
+    const [showXMLPressed, setShowXMLPressed] = useState(true);
+    const [marcData, setMarcData] = useState({})
+    const [header, setHeader] = useState('')
 
-  let sruUrl;
-  if (queryParams.auth_id) {
-    sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
-  } else if (queryParams.mms_id) {
-    sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
-    if (queryParams.institution) {
-      sruUrl += "&institution=" + queryParams.institution;
+    let sruUrl;
+    if (queryParams.auth_id) {
+        sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
+    } else if (queryParams.mms_id) {
+        sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
+        if (queryParams.institution) {
+            sruUrl += "&institution=" + queryParams.institution;
+        }
+    } else {
+        alert("params are missing")
     }
-  } else {
-    alert("params are missing")
-  }
-
-  useEffect(()=>{
-
-    fetch(sruUrl, {
-      method: 'GET'
-    })
-    .then(response => {
-      return response.text()})
-    .then(xml => {
-        // TODO Do GET call to new lambda. Mock:
-        mockResponseMarc21XmlParser.xmlPresentation = xml;
-        setMarcData(mockResponseMarc21XmlParser)
-    })
-
-  }, [])
 
     useEffect(() => {
-        if(isEmpty(marcData)) return
+
+        fetch(sruUrl, {
+            method: 'GET'
+        })
+            .then(response => {
+                return response.text()
+            })
+            .then(xml => {
+                // TODO Do GET call to new lambda. Mock:
+                mockResponseMarc21XmlParser.xmlPresentation = xml;
+                setMarcData(mockResponseMarc21XmlParser)
+            })
+
+    }, [])
+
+    useEffect(() => {
+        if (isEmpty(marcData)) return
 
         let headerFromFields = marcData.mainTitle;
-        if(marcData.mainTitle.endsWith(":")) {
+        if (marcData.mainTitle.endsWith(":")) {
             headerFromFields += " "
         } else {
             headerFromFields += " : "
         }
         headerFromFields += marcData.parallelTitle
-        if(marcData.numberOfPartTitle !== "") headerFromFields += ", " + marcData.numberOfPartTitle
-        if(marcData.statementOfResponsibility !== "") headerFromFields+= " / " + marcData.statementOfResponsibility
-        if(marcData.author !== "") headerFromFields += " ♠ " + marcData.author
+        if (marcData.numberOfPartTitle !== "") headerFromFields += ", " + marcData.numberOfPartTitle
+        if (marcData.statementOfResponsibility !== "") headerFromFields += " / " + marcData.statementOfResponsibility
+        if (marcData.author !== "") headerFromFields += " ♠ " + marcData.author
 
         setHeader(headerFromFields.trim());
     }, [marcData])
 
-  const showXML = () => {
-    setShowXMLPressed(true);
-  };
+    const showXML = () => {
+        setShowXMLPressed(true);
+    };
 
-  const showLineFormat = () => {
-    setShowXMLPressed(false);
-  };
+    const showLineFormat = () => {
+        setShowXMLPressed(false);
+    };
 
-  return (
-      <>
-        <h2>{header}</h2>
-        <Button
-            variant="contained"
-            color={showXMLPressed ? "primary" : "default"}
-            disableElevation={!showXMLPressed}
-            onClick={showXML}
-        >
-          XML
-        </Button>
-        {"  "}
-        <Button
-            variant="contained"
-            color={showXMLPressed ? "default" : "primary"}
-            disableElevation={showXMLPressed}
-            onClick={showLineFormat}
-        >
-          LineFormat
-        </Button>
-        <DataDisplay
-            marcData={marcData}
-            showAsXMLInput={showXMLPressed}
-        ></DataDisplay>
-      </>
-  );
+    return (
+        <>
+            <h2>{header}</h2>
+            <Button
+                variant="contained"
+                color={showXMLPressed ? "primary" : "default"}
+                disableElevation={!showXMLPressed}
+                onClick={showXML}
+            >
+                XML
+            </Button>
+            {"  "}
+            <Button
+                variant="contained"
+                color={showXMLPressed ? "default" : "primary"}
+                disableElevation={showXMLPressed}
+                onClick={showLineFormat}
+            >
+                LineFormat
+            </Button>
+            <DataDisplay
+                marcData={marcData}
+                showAsXMLInput={showXMLPressed}
+            ></DataDisplay>
+        </>
+    );
 }
 
 const mockResponseMarc21XmlParser = {
-    mainTitle:  "Hobitten :",
+    mainTitle: "Hobitten :",
     parallelTitle: "Smaugs ødemark i bilder",
     statementOfResponsibility: "Jude Fisher ; oversatt fra engelsk av Camilla Eikeland-Sandnes",
     numberOfPartTitle: "",

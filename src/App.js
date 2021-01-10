@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import queryString from 'query-string';
 import {isEmpty} from 'lodash';
 import format from "xml-formatter";
+import DataDownload from "./components/DataDownload";
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
@@ -107,6 +108,10 @@ function App() {
                 marcData={marcData}
                 showAsXMLInput={showXMLPressed}
             ></DataDisplay>
+            <DataDownload
+                marcData={marcData}
+            >
+            </DataDownload>
         </>
     );
 }

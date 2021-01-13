@@ -3,7 +3,6 @@ import axios from "axios";
 import Button from "@material-ui/core/Button";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
-import format from "xml-formatter";
 import queryString from 'query-string';
 import {isEmpty} from 'lodash';
 
@@ -16,8 +15,6 @@ function App() {
     const [showXMLPressed, setShowXMLPressed] = useState(true);
     const [marcData, setMarcData] = useState({})
     const [header, setHeader] = useState('')
-
-    const transformer = format;
 
     let sruUrl;
     if (queryParams.auth_id) {
@@ -38,10 +35,7 @@ function App() {
             })
             .then(data => {
                 const xmlRecord = extractRecord(data);
-                const xmlPresentation = transformer(xmlRecord)
-                    .replaceAll("\"", "\'")
-                    .replaceAll("\n", "");
-
+                const xmlPresentation = xmlRecord.replaceAll("\"", "'")
                 axios.post(marc21XmlParserUrl, { xmlRecord: xmlPresentation })
                     .then(response => {
                         return response.data
@@ -50,12 +44,11 @@ function App() {
                         setMarcData(marcData)
                     })
             })
-    }, [sruUrl, transformer])
+    }, [sruUrl])
 
     useEffect(() => {
         if (isEmpty(marcData)) {
             setHeader("Laster data... ")
-            return
         } else {
             setHeader(extractHeaderFromMarcDataFields(marcData))
         }
@@ -102,7 +95,7 @@ function extractRecord(rawXml) {
     const recordStartIndex = rec.indexOf("<record ");
     const recordEndIndex = rec.indexOf("</record>");
     rec = rec.slice(recordStartIndex, recordEndIndex);
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec + "</record>";
 }
 
 function extractHeaderFromMarcDataFields(marcData) {

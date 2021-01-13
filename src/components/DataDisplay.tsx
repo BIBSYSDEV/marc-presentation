@@ -41,7 +41,7 @@ const DataDisplay: FC = (props: any) => {
                 {fileLoaded === true ? (
                     <DataField value={showData()} readOnly></DataField>
                 ) : (
-                    <h1>Waiting to display data</h1>
+                    <span>Laster {props.showAsXMLInput ? "xml" : "lineformat"} data ...</span>
                 )}
             </DataFieldWrapper>
         </>

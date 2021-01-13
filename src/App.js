@@ -1,13 +1,15 @@
 import React, {useState, useEffect} from "react";
+import axios from "axios";
+import Button from "@material-ui/core/Button";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
-import Button from "@material-ui/core/Button";
+import format from "xml-formatter";
 import queryString from 'query-string';
 import {isEmpty} from 'lodash';
-import format from "xml-formatter";
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
+const marc21XmlParserUrl = 'https://api.sandbox.bibs.aws.unit.no/marc21';
 const queryParams = queryString.parse(window.location.search);
 
 function App() {
@@ -30,49 +32,33 @@ function App() {
     }
 
     useEffect(() => {
-
-        fetch(sruUrl, {
-            method: 'GET'
-        })
+        axios.get(sruUrl)
             .then(response => {
-                return response.text()
+                return response.data
             })
-            .then(xml => {
-                const xmlRecord = extractRecord(xml);
-                const xmlPresentation = transformer(xmlRecord);
+            .then(data => {
+                const xmlRecord = extractRecord(data);
+                const xmlPresentation = transformer(xmlRecord)
+                    .replaceAll("\"", "\'")
+                    .replaceAll("\n", "");
 
-                // TODO Do GET call to new lambda. Mock:
-                mockResponseMarc21XmlParser.xmlPresentation = xmlPresentation;
-                setMarcData(mockResponseMarc21XmlParser)
+                axios.post(marc21XmlParserUrl, { xmlRecord: xmlPresentation })
+                    .then(response => {
+                        return response.data
+                    })
+                    .then(marcData => {
+                        setMarcData(marcData)
+                    })
             })
-    }, [])
-
-    function extractRecord(rawXml) {
-        let rec = rawXml.replaceAll("marc:", "");
-        const recordStartIndex = rec.indexOf("<record ");
-        const recordEndIndex = rec.indexOf("</record>");
-        rec = rec.slice(recordStartIndex, recordEndIndex);
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
-    }
+    }, [sruUrl, transformer])
 
     useEffect(() => {
-        if (isEmpty(marcData)) return
-
-        let headerFromFields = marcData.mainTitle;
-        if (marcData.parallelTitle !== "") {
-            if (marcData.mainTitle.endsWith(":")) {
-                headerFromFields += " "
-            } else {
-                headerFromFields += " : "
-            }
-            headerFromFields += marcData.parallelTitle
+        if (isEmpty(marcData)) {
+            setHeader("Laster data... ")
+            return
+        } else {
+            setHeader(extractHeaderFromMarcDataFields(marcData))
         }
-        if (marcData.numberOfPartTitle !== "") headerFromFields += ", " + marcData.numberOfPartTitle
-        if (marcData.statementOfResponsibility !== "") headerFromFields += " / " + marcData.statementOfResponsibility
-        if (marcData.author !== "") headerFromFields += " ♠ " + marcData.author
-        if (marcData.year !== "") headerFromFields += " (" + marcData.year + ")"
-
-        setHeader(headerFromFields.trim());
     }, [marcData])
 
     const showXML = () => {
@@ -106,44 +92,46 @@ function App() {
             <DataDisplay
                 marcData={marcData}
                 showAsXMLInput={showXMLPressed}
-            ></DataDisplay>
+            />
         </>
     );
 }
 
-const mockResponseMarc21XmlParser = {
-    mainTitle: "Hobitten :",
-    parallelTitle: "Smaugs ødemark i bilder",
-    statementOfResponsibility: "Jude Fisher ; oversatt fra engelsk av Camilla Eikeland-Sandnes",
-    numberOfPartTitle: "",
-    author: "Fisher, Jude",
-    year: "2013",
-    xmlPresentation: "",
-    linePresentation: "*ldr 01044cam a2200301 c 4500\n" +
-        "*001 991325803064702201\n" +
-        "*005 20160622160726.0\n" +
-        "*007 ta\n" +
-        "*008 141124s2013    no#||||j||||||000|0|nob|^\n" +
-        "*015 # # $a1337755 $2nbf\n" +
-        "*020 # # $a9788210053412 $qib. $cNkr 249.00\n" +
-        "*035 # # $a132580306-47bibsys_network\n" +
-        "*035 # # $a(NO-TrBIB)132580306\n" +
-        "*035 # # $a(NO-OsBA)0370957\n" +
-        "*040 # # $aNO-OsNB $bnob $ekatreg\n" +
-        "*041 1 # $heng\n" +
-        "*042 # # $anorbibl\n" +
-        "*044 # # $cno\n" +
-        "*082 7 4 $a791.4372 $qNO-OsNB $25/nor\n" +
-        "*100 1 # $aFisher, Jude $0(NO-TrBIB)1093967\n" +
-        "*245 1 0 $aHobbiten : $bSmaugs ødemark i bilder $cJude Fisher ; oversatt fra engelsk av Camilla Eikeland-Sandnes\n" +
-        "*246 1 # $aThe Hobbit $bthe desolation of Smaug visual companion $iOriginaltittel\n" +
-        "*260 # # $aOslo $bTiden $c2013\n" +
-        "*300 # # $a75 s. $bill. $c28 cm\n" +
-        "*700 1 # $aEikeland-Sundnes, Camilla $d1978- $4trl $0(NO-TrBIB)10061339\n" +
-        "*856 4 2 $3Beskrivelse fra forlaget (kort) $uhttp://content.bibsys.no/content/?type=descr_publ_brief&isbn=8210053418\n" +
-        "*852 0 1 $a47BIBSYS_NB $6991325803064702202 $9D $9P\n" +
-        "*901 # # $a90\n" +
-        "*913 # # $aNorbok $bNB"
+function extractRecord(rawXml) {
+    let rec = rawXml.replaceAll("marc:", "");
+    const recordStartIndex = rec.indexOf("<record ");
+    const recordEndIndex = rec.indexOf("</record>");
+    rec = rec.slice(recordStartIndex, recordEndIndex);
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec;
+}
+
+function extractHeaderFromMarcDataFields(marcData) {
+    const mainTitle = marcData.mainTitle ? marcData.mainTitle.trim() : ""
+    const paralleltitle = marcData.paralleltitle ? marcData.paralleltitle.trim() : ""
+    const numberOfPartTitle = marcData.numberOfPartTitle ? marcData.numberOfPartTitle.trim() : ""
+    const statementOfResponsibility = marcData.statementOfResponsibility ? marcData.statementOfResponsibility.trim() : ""
+    const year = marcData.year ? marcData.year.trim() : ""
+    let authors = ""
+    if(marcData.authors && marcData.authors.length > 0) {
+        marcData.authors.forEach(author => {
+            if(authors !== "") authors += ", "
+            authors += author
+        })
+    }
+    let headerFromFields = mainTitle;
+    if (paralleltitle !== "") {
+        if (mainTitle.endsWith(":")) {
+            headerFromFields += " "
+        } else {
+            headerFromFields += " : "
+        }
+        headerFromFields += paralleltitle
+    }
+    if (numberOfPartTitle !== "") headerFromFields += ", " + numberOfPartTitle
+    if (statementOfResponsibility !== "") headerFromFields += " / " + statementOfResponsibility
+    if (authors !== "") headerFromFields += " ♠ " + authors
+    if (year !== "") headerFromFields += " (" + year + ")"
+    return headerFromFields.trim()
 }
 
 export default App;

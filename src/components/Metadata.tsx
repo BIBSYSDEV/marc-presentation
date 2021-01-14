@@ -28,7 +28,7 @@ const Metadata: FC = (props: any) => {
         if (!isEmpty(props.marcData)) {
           setTitle(extractTitle(props.marcData))
           setAuthor(extractAuthors(props.marcData.authors))
-          if(props.marcData.year !== "") setYear(props.marcData.year)
+          if(props.marcData.year && props.marcData.year !== "") setYear(props.marcData.year)
           setMarcDataReady(true)
         }
     }, [props.marcData]);
@@ -54,7 +54,7 @@ function extractAuthors(authors: Author[]) {
         authors.forEach(author => {
             if(authorsString !== "") authorsString += ", "
             if(author.name != "" ) authorsString += author.name
-            if(author.date != "" ) authorsString += " (" + author.date + ")"
+            if(author.date && author.date != "" ) authorsString += " (" + author.date + ")"
         })
     }
     return authorsString

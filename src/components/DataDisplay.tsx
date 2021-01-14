@@ -13,10 +13,10 @@ const DataFieldWrapper = styled.div`
 `;
 
 const DataDisplay: FC = (props: any) => {
-    const [marcDataReady, setMarcDataReady] = useState<Boolean>(false);
-    const [showAsXML, setShowAsXML] = useState<Boolean>(false);
-    const [xmlPresentation, setXmlPresentation] = useState<string>("");
-    const [linePresentation, setLinePresentation] = useState<string>("");
+    const [marcDataReady, setMarcDataReady] = useState(false);
+    const [showAsXML, setShowAsXML] = useState(false);
+    const [xmlPresentation, setXmlPresentation] = useState("");
+    const [linePresentation, setLinePresentation] = useState("");
 
     useEffect(() => {
         if (!isEmpty(props.marcData)) {

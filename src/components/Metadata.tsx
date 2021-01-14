@@ -1,28 +1,12 @@
 import React, {useState, useEffect, FC} from "react";
+import {Author, MarcData} from "../types";
 import {isEmpty} from "lodash";
 
-export interface MarcData {
-    mainTitle: string;
-    parallelTitle?: string;
-    numberOfPartTitle?: string;
-    statementOfResponsibility?: string;
-    year?: string;
-    authors: Author[];
-    linePresentation?: string;
-    xmlPresentation?: string;
-}
-
-export interface Author {
-    name: string;
-    date?: string;
-    id?: string;
-}
-
 const Metadata: FC = (props: any) => {
-    const [marcDataReady, setMarcDataReady] = useState<Boolean>(false);
-    const [title, setTitle] = useState<string>("");
-    const [author, setAuthor] = useState<string>("");
-    const [year, setYear] = useState<string>("");
+    const [marcDataReady, setMarcDataReady] = useState(false)
+    const [title, setTitle] = useState("")
+    const [author, setAuthor] = useState("")
+    const [year, setYear] = useState("")
 
     useEffect(() => {
         if (!isEmpty(props.marcData)) {
@@ -62,18 +46,18 @@ function extractAuthors(authors: Author[]) {
 
 function extractTitle(marcData: MarcData) {
     const mainTitle = marcData.mainTitle ? marcData.mainTitle.trim() : ""
-    const paralleltitle = marcData.parallelTitle ? marcData.parallelTitle.trim() : ""
+    const parallelTitle = marcData.parallelTitle ? marcData.parallelTitle.trim() : ""
     const numberOfPartTitle = marcData.numberOfPartTitle ? marcData.numberOfPartTitle.trim() : ""
     const statementOfResponsibility = marcData.statementOfResponsibility ? marcData.statementOfResponsibility.trim() : ""
 
     let titleFromFields = mainTitle;
-    if (paralleltitle !== "") {
+    if (parallelTitle !== "") {
         if (mainTitle.endsWith(":")) {
             titleFromFields += " "
         } else {
             titleFromFields += " : "
         }
-        titleFromFields += paralleltitle
+        titleFromFields += parallelTitle
     }
     if (numberOfPartTitle !== "") titleFromFields += ", " + numberOfPartTitle
     if (statementOfResponsibility !== "") titleFromFields += " / " + statementOfResponsibility

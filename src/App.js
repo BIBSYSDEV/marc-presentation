@@ -33,9 +33,13 @@ function App() {
                 return response.data
             })
             .then(data => {
-                const xmlRecord = extractRecord(data);
-                const xmlPresentation = xmlRecord.replaceAll("\"", "'")
-                axios.post(marc21XmlParserUrl, { xmlRecord: xmlPresentation })
+                let formattedMarc21XML = data.replaceAll("marc:", "").replaceAll("\"", "'")
+                const recordStartIndex = formattedMarc21XML.indexOf("<record ");
+                const recordEndIndex = formattedMarc21XML.indexOf("</record>");
+                let xmlRecord = "<?xml version='1.0' encoding='UTF-8'?>\n"
+                    + formattedMarc21XML.slice(recordStartIndex, recordEndIndex)
+                    + "</record>";
+                axios.post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
                     .then(response => {
                         return response.data
                     })
@@ -79,14 +83,6 @@ function App() {
             />
         </>
     );
-}
-
-function extractRecord(rawXml) {
-    let rec = rawXml.replaceAll("marc:", "");
-    const recordStartIndex = rec.indexOf("<record ");
-    const recordEndIndex = rec.indexOf("</record>");
-    rec = rec.slice(recordStartIndex, recordEndIndex);
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec + "</record>";
 }
 
 export default App;

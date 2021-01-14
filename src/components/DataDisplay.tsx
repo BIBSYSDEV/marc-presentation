@@ -13,7 +13,7 @@ const DataFieldWrapper = styled.div`
 `;
 
 const DataDisplay: FC = (props: any) => {
-    const [fileLoaded, setFileLoaded] = useState<Boolean>(false);
+    const [marcDataReady, setMarcDataReady] = useState<Boolean>(false);
     const [showAsXML, setShowAsXML] = useState<Boolean>(false);
     const [xmlPresentation, setXmlPresentation] = useState<string>("");
     const [linePresentation, setLinePresentation] = useState<string>("");
@@ -22,7 +22,7 @@ const DataDisplay: FC = (props: any) => {
         if (!isEmpty(props.marcData)) {
             setXmlPresentation(props.marcData.xmlPresentation);
             setLinePresentation(props.marcData.linePresentation)
-            setFileLoaded(true);
+            setMarcDataReady(true);
         }
         setShowAsXML(props.showAsXMLInput);
     }, [props.marcData, props.showAsXMLInput]);
@@ -38,8 +38,8 @@ const DataDisplay: FC = (props: any) => {
     return (
         <>
             <DataFieldWrapper>
-                {fileLoaded === true ? (
-                    <DataField value={showData()} readOnly></DataField>
+                {marcDataReady ? (
+                    <DataField value={showData()} readOnly/>
                 ) : (
                     <span>Laster {props.showAsXMLInput ? "xml" : "lineformat"} data ...</span>
                 )}

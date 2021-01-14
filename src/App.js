@@ -3,8 +3,8 @@ import axios from "axios";
 import Button from "@material-ui/core/Button";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay.tsx";
+import Metadata from "./components/Metadata";
 import queryString from 'query-string';
-import {isEmpty} from 'lodash';
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
@@ -14,7 +14,6 @@ const queryParams = queryString.parse(window.location.search);
 function App() {
     const [showXMLPressed, setShowXMLPressed] = useState(true);
     const [marcData, setMarcData] = useState({})
-    const [header, setHeader] = useState('')
 
     let sruUrl;
     if (queryParams.auth_id) {
@@ -46,14 +45,6 @@ function App() {
             })
     }, [sruUrl])
 
-    useEffect(() => {
-        if (isEmpty(marcData)) {
-            setHeader("Laster data... ")
-        } else {
-            setHeader(extractHeaderFromMarcDataFields(marcData))
-        }
-    }, [marcData])
-
     const showXML = () => {
         setShowXMLPressed(true);
     };
@@ -64,7 +55,7 @@ function App() {
 
     return (
         <>
-            <h2>{header}</h2>
+            <Metadata marcData={marcData}/>
             <Button
                 variant="contained"
                 color={showXMLPressed ? "primary" : "default"}
@@ -96,35 +87,6 @@ function extractRecord(rawXml) {
     const recordEndIndex = rec.indexOf("</record>");
     rec = rec.slice(recordStartIndex, recordEndIndex);
     return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + rec + "</record>";
-}
-
-function extractHeaderFromMarcDataFields(marcData) {
-    const mainTitle = marcData.mainTitle ? marcData.mainTitle.trim() : ""
-    const paralleltitle = marcData.paralleltitle ? marcData.paralleltitle.trim() : ""
-    const numberOfPartTitle = marcData.numberOfPartTitle ? marcData.numberOfPartTitle.trim() : ""
-    const statementOfResponsibility = marcData.statementOfResponsibility ? marcData.statementOfResponsibility.trim() : ""
-    const year = marcData.year ? marcData.year.trim() : ""
-    let authors = ""
-    if(marcData.authors && marcData.authors.length > 0) {
-        marcData.authors.forEach(author => {
-            if(authors !== "") authors += ", "
-            authors += author
-        })
-    }
-    let headerFromFields = mainTitle;
-    if (paralleltitle !== "") {
-        if (mainTitle.endsWith(":")) {
-            headerFromFields += " "
-        } else {
-            headerFromFields += " : "
-        }
-        headerFromFields += paralleltitle
-    }
-    if (numberOfPartTitle !== "") headerFromFields += ", " + numberOfPartTitle
-    if (statementOfResponsibility !== "") headerFromFields += " / " + statementOfResponsibility
-    if (authors !== "") headerFromFields += " ♠ " + authors
-    if (year !== "") headerFromFields += " (" + year + ")"
-    return headerFromFields.trim()
 }
 
 export default App;

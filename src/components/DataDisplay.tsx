@@ -1,6 +1,6 @@
 import React, {useState, useEffect, FC} from "react";
 import styled from "styled-components";
-import {isEmpty} from "lodash";
+import {MarcData} from "../types";
 
 const DataField = styled.textarea`
   height: 20rem;
@@ -12,20 +12,25 @@ const DataFieldWrapper = styled.div`
   width: 30rem;
 `;
 
-const DataDisplay: FC = (props: any) => {
-    const [fileLoaded, setFileLoaded] = useState<Boolean>(false);
-    const [showAsXML, setShowAsXML] = useState<Boolean>(false);
-    const [xmlPresentation, setXmlPresentation] = useState<string>("");
-    const [linePresentation, setLinePresentation] = useState<string>("");
+interface DataDisplayProps {
+    marcData?: MarcData
+    showAsXMLInput: boolean
+}
+
+const DataDisplay: FC<DataDisplayProps> = ({ marcData , showAsXMLInput}) => {
+    const [marcDataReady, setMarcDataReady] = useState(false);
+    const [showAsXML, setShowAsXML] = useState(false);
+    const [xmlPresentation, setXmlPresentation] = useState("");
+    const [linePresentation, setLinePresentation] = useState("");
 
     useEffect(() => {
-        if (!isEmpty(props.marcData)) {
-            setXmlPresentation(props.marcData.xmlPresentation);
-            setLinePresentation(props.marcData.linePresentation)
-            setFileLoaded(true);
+        if (marcData) {
+            setXmlPresentation(marcData.xmlPresentation ? marcData.xmlPresentation : "");
+            setLinePresentation(marcData.linePresentation ? marcData.linePresentation : "")
+            setMarcDataReady(true);
         }
-        setShowAsXML(props.showAsXMLInput);
-    }, [props.marcData, props.showAsXMLInput]);
+        setShowAsXML(showAsXMLInput);
+    }, [marcData, showAsXMLInput]);
 
     const showData = (): string => {
         if (showAsXML) {
@@ -36,15 +41,13 @@ const DataDisplay: FC = (props: any) => {
     };
 
     return (
-        <>
-            <DataFieldWrapper>
-                {fileLoaded === true ? (
-                    <DataField value={showData()} readOnly></DataField>
-                ) : (
-                    <h1>Waiting to display data</h1>
-                )}
-            </DataFieldWrapper>
-        </>
+        <DataFieldWrapper>
+            {marcDataReady ? (
+                <DataField value={showData()} readOnly/>
+            ) : (
+                <span>Laster {showAsXMLInput ? "xml" : "lineformat"} data ...</span>
+            )}
+        </DataFieldWrapper>
     );
 };
 

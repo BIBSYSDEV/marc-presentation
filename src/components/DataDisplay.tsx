@@ -41,15 +41,13 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData , showAsXMLInput}) => {
     };
 
     return (
-        <>
-            <DataFieldWrapper>
-                {marcDataReady ? (
-                    <DataField value={showData()} readOnly/>
-                ) : (
-                    <span>Laster {showAsXMLInput ? "xml" : "lineformat"} data ...</span>
-                )}
-            </DataFieldWrapper>
-        </>
+        <DataFieldWrapper>
+            {marcDataReady ? (
+                <DataField value={showData()} readOnly/>
+            ) : (
+                <span>Laster {showAsXMLInput ? "xml" : "lineformat"} data ...</span>
+            )}
+        </DataFieldWrapper>
     );
 };
 

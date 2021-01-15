@@ -24,12 +24,12 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
         <div>
             {marcDataReady ? (
                 <>
-                    <h3>{title}</h3>
-                    <h4>{author}</h4>
-                    <h4>{year}</h4>
+                    <h1>{title}</h1>
+                    <h2>{author}</h2>
+                    <h2>{year}</h2>
                 </>
             ) : (
-                <h3>Laster data ...</h3>
+                <h1>Laster data ...</h1>
             )}
         </div>
     );

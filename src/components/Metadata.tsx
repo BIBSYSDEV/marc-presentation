@@ -41,7 +41,7 @@ function extractAuthors(authors: Author[]) {
         authors.forEach(author => {
             if(authorsString !== "") authorsString += ", "
             if(author.name != "" ) authorsString += author.name
-            if(author.date && author.date != "" ) authorsString += " (" + author.date + ")"
+            if(author.date && author.date != "" ) authorsString += `(${author.date})`
         })
     }
     return authorsString
@@ -62,8 +62,8 @@ function extractTitle(marcData: MarcData) {
         }
         titleFromFields += parallelTitle
     }
-    if (numberOfPartTitle !== "") titleFromFields += ", " + numberOfPartTitle
-    if (statementOfResponsibility !== "") titleFromFields += " / " + statementOfResponsibility
+    if (numberOfPartTitle !== "") titleFromFields += `, ${numberOfPartTitle}`
+    if (statementOfResponsibility !== "") titleFromFields += ` / ${statementOfResponsibility}`
 
     return titleFromFields.trim()
 }

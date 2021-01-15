@@ -12,6 +12,9 @@ const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
 const marc21XmlParserUrl = 'https://api.sandbox.bibs.aws.unit.no/marc21';
 const queryParams = queryString.parse(window.location.search);
 
+const RECORD_START_TAG = "<record "
+const RECORD_END_TAG = "</record>"
+
 const App: FC = () => {
     const [showXMLPressed, setShowXMLPressed] = useState(true);
     const [marcData, setMarcData] = useState<MarcData | undefined>()
@@ -35,11 +38,9 @@ const App: FC = () => {
             })
             .then(data => {
                 let formattedMarc21XML = data.replaceAll("marc:", "").replaceAll("\"", "'")
-                const recordStartIndex = formattedMarc21XML.indexOf("<record ");
-                const recordEndIndex = formattedMarc21XML.indexOf("</record>");
-                let xmlRecord = "<?xml version='1.0' encoding='UTF-8'?>\n"
-                    + formattedMarc21XML.slice(recordStartIndex, recordEndIndex)
-                    + "</record>";
+                const recordStartIndex = formattedMarc21XML.indexOf(RECORD_START_TAG);
+                const recordEndIndex = formattedMarc21XML.indexOf(RECORD_END_TAG) + RECORD_END_TAG.length;
+                const xmlRecord = `<?xml version='1.0' encoding='UTF-8'?>\n${formattedMarc21XML.slice(recordStartIndex, recordEndIndex)}`
                 axios.post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
                     .then(response => {
                         return response.data

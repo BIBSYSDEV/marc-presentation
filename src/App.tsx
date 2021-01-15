@@ -1,21 +1,22 @@
-import React, {useState, useEffect} from "react";
+import React, { FC, useEffect, useState } from 'react';
 import axios from "axios";
 import Button from "@material-ui/core/Button";
 import "./App.css";
-import DataDisplay from "./components/DataDisplay.tsx";
+import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
 import queryString from 'query-string';
+import {MarcData} from "./types";
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
 const marc21XmlParserUrl = 'https://api.sandbox.bibs.aws.unit.no/marc21';
 const queryParams = queryString.parse(window.location.search);
 
-function App() {
+const App: FC = () => {
     const [showXMLPressed, setShowXMLPressed] = useState(true);
-    const [marcData, setMarcData] = useState({})
+    const [marcData, setMarcData] = useState<MarcData | undefined>()
 
-    let sruUrl;
+    let sruUrl = "";
     if (queryParams.auth_id) {
         sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
     } else if (queryParams.mms_id) {

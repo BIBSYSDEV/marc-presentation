@@ -1,21 +1,24 @@
 import React, {useState, useEffect, FC} from "react";
 import {Author, MarcData} from "../types";
-import {isEmpty} from "lodash";
 
-const Metadata: FC = (props: any) => {
+interface MetadataProps {
+    marcData?: MarcData;
+}
+
+const Metadata: FC<MetadataProps> = ({ marcData }) => {
     const [marcDataReady, setMarcDataReady] = useState(false)
     const [title, setTitle] = useState("")
     const [author, setAuthor] = useState("")
     const [year, setYear] = useState("")
 
     useEffect(() => {
-        if (!isEmpty(props.marcData)) {
-          setTitle(extractTitle(props.marcData))
-          setAuthor(extractAuthors(props.marcData.authors))
-          if(props.marcData.year && props.marcData.year !== "") setYear(props.marcData.year)
+        if (marcData) {
+          setTitle(extractTitle(marcData))
+          setAuthor(extractAuthors(marcData.authors))
+          if(marcData.year && marcData.year !== "") setYear(marcData.year)
           setMarcDataReady(true)
         }
-    }, [props.marcData]);
+    }, [marcData]);
 
     return (
         <div>

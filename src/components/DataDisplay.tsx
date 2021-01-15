@@ -1,6 +1,6 @@
 import React, {useState, useEffect, FC} from "react";
 import styled from "styled-components";
-import {isEmpty} from "lodash";
+import {MarcData} from "../types";
 
 const DataField = styled.textarea`
   height: 20rem;
@@ -12,20 +12,25 @@ const DataFieldWrapper = styled.div`
   width: 30rem;
 `;
 
-const DataDisplay: FC = (props: any) => {
+interface DataDisplayProps {
+    marcData?: MarcData
+    showAsXMLInput: boolean
+}
+
+const DataDisplay: FC<DataDisplayProps> = ({ marcData , showAsXMLInput}) => {
     const [marcDataReady, setMarcDataReady] = useState(false);
     const [showAsXML, setShowAsXML] = useState(false);
     const [xmlPresentation, setXmlPresentation] = useState("");
     const [linePresentation, setLinePresentation] = useState("");
 
     useEffect(() => {
-        if (!isEmpty(props.marcData)) {
-            setXmlPresentation(props.marcData.xmlPresentation);
-            setLinePresentation(props.marcData.linePresentation)
+        if (marcData) {
+            setXmlPresentation(marcData.xmlPresentation ? marcData.xmlPresentation : "");
+            setLinePresentation(marcData.linePresentation ? marcData.linePresentation : "")
             setMarcDataReady(true);
         }
-        setShowAsXML(props.showAsXMLInput);
-    }, [props.marcData, props.showAsXMLInput]);
+        setShowAsXML(showAsXMLInput);
+    }, [marcData, showAsXMLInput]);
 
     const showData = (): string => {
         if (showAsXML) {
@@ -41,7 +46,7 @@ const DataDisplay: FC = (props: any) => {
                 {marcDataReady ? (
                     <DataField value={showData()} readOnly/>
                 ) : (
-                    <span>Laster {props.showAsXMLInput ? "xml" : "lineformat"} data ...</span>
+                    <span>Laster {showAsXMLInput ? "xml" : "lineformat"} data ...</span>
                 )}
             </DataFieldWrapper>
         </>

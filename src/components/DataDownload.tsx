@@ -12,8 +12,8 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData}) => {
 
     useEffect(() => {
         if (marcData) {
-            setXmlContent(marcData.xmlPresentation ? marcData.xmlPresentation : "");
-            setLineContent(marcData.linePresentation ? marcData.linePresentation : "")
+            setXmlContent(marcData.xmlPresentation ?? "");
+            setLineContent(marcData.linePresentation ?? "");
         }
     }, [marcData]);
 

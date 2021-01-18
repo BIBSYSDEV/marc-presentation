@@ -18,8 +18,8 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData}) => {
     }, [marcData]);
 
     function createDownload(content: string, filename: string, mimetype: string) {
-        let elem = window.document.createElement('a');
-        let blob = new Blob([content], {type: mimetype});
+        const elem = window.document.createElement('a');
+        const blob = new Blob([content], {type: mimetype});
         elem.download = filename;
         elem.href = window.URL.createObjectURL(blob);
         document.body.appendChild(elem);

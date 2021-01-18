@@ -7,8 +7,8 @@ interface DataDownloadProps {
 }
 
 const DataDownload: FC<DataDownloadProps> = ({ marcData}) => {
-    const [xmlContent, setXmlContent] = useState<string>("");
-    const [lineContent, setLineContent] = useState<string>("");
+    const [xmlContent, setXmlContent] = useState("");
+    const [lineContent, setLineContent] = useState("");
 
     useEffect(() => {
         if (marcData) {
@@ -39,7 +39,6 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData}) => {
         <>
             <Button
                 variant="outlined"
-                color={"default"}
                 onClick={downloadXmlContent}
             >
                 Download XML
@@ -47,7 +46,6 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData}) => {
             {"  "}
             <Button
                 variant="outlined"
-                color={"default"}
                 onClick={downloadLineContent}
             >
                 Download Lineformat

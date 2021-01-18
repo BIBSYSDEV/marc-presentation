@@ -6,6 +6,7 @@ import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
 import queryString from 'query-string';
 import {MarcData} from "./types";
+import DataDownload from "./components/DataDownload";
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
@@ -83,6 +84,10 @@ const App: FC = () => {
                 marcData={marcData}
                 showAsXMLInput={showXMLPressed}
             />
+            <DataDownload
+                marcData={marcData}
+            >
+            </DataDownload>
         </>
     );
 }

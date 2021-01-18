@@ -19,10 +19,9 @@ const App: FC = () => {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
   const [marcData, setMarcData] = useState<MarcData | undefined>();
   const [errorPresent, setErrorPresent] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("hei");
+  const [errorMessage, setErrorMessage] = useState("");
 
   let sruUrl = "";
-  //Håndtere manglende URL PARAMS
   if (queryParams.auth_id) {
     sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
   } else if (queryParams.mms_id) {
@@ -38,48 +37,50 @@ const App: FC = () => {
   }
 
   useEffect(() => {
-    //Mangler feilhåndtering på AXIOS kallet.
-    try {
-      axios
-        .get(sruUrl)
-        .then((response) => {
-          return response.data;
-        })
-        .then((data) => {
-          let formattedMarc21XML = data
-            .replaceAll("marc:", "")
-            .replaceAll('"', "'");
-          const recordStartIndex = formattedMarc21XML.indexOf(RECORD_START_TAG);
-          const recordEndIndex =
-            formattedMarc21XML.indexOf(RECORD_END_TAG) + RECORD_END_TAG.length;
-          const xmlRecord = `<?xml version='1.0' encoding='UTF-8'?>\n${formattedMarc21XML.slice(
-            recordStartIndex,
-            recordEndIndex
-          )}`;
-          //Håndtere feil ved respons fra formatering
-          axios
-            .post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
-            .then((response) => {
-              return response.data;
-            })
-            .then((marcData) => {
-              setMarcData(marcData);
-              setErrorPresent(false);
-            });
-        });
-      if (typeof marcData == "undefined") {
-        if (!errorPresent) {
+    async function getAndParseXMLData() {
+      try {
+        let axiosCompleted;
+        await axios
+          .get(sruUrl)
+          .then((response) => {
+            return response.data;
+          })
+          .then((data) => {
+            let formattedMarc21XML = data
+              .replaceAll("marc:", "")
+              .replaceAll('"', "'");
+            const recordStartIndex = formattedMarc21XML.indexOf(
+              RECORD_START_TAG
+            );
+            const recordEndIndex =
+              formattedMarc21XML.indexOf(RECORD_END_TAG) +
+              RECORD_END_TAG.length;
+            const xmlRecord = `<?xml version='1.0' encoding='UTF-8'?>\n${formattedMarc21XML.slice(
+              recordStartIndex,
+              recordEndIndex
+            )}`;
+            axios
+              .post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
+              .then((response) => {
+                return response.data;
+              })
+              .then((marcData) => {
+                setMarcData(marcData);
+                setErrorPresent(false);
+                axiosCompleted = true;
+              });
+          });
+        if (!axiosCompleted) {
           setErrorPresent(true);
           setErrorMessage("Resource not found");
         }
-      }
-    } catch (e) {
-      if (!errorPresent) {
+      } catch (e) {
         setErrorPresent(true);
         setErrorMessage("Could not reach server");
       }
     }
-  }, [sruUrl, errorPresent]);
+    getAndParseXMLData();
+  }, [sruUrl]);
 
   const showXML = () => {
     setShowXMLPressed(true);

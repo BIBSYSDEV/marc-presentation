@@ -5,6 +5,7 @@ import "./App.css";
 import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
 import queryString from "query-string";
+import styled from "styled-components";
 import { MarcData } from "./types";
 
 const almaSruUrl = "https://api.sandbox.bibs.aws.unit.no/alma";
@@ -15,11 +16,15 @@ const queryParams = queryString.parse(window.location.search);
 const RECORD_START_TAG = "<record ";
 const RECORD_END_TAG = "</record>";
 
+const ErrorTextField = styled.div`
+  white-space: pre-line;
+`;
+
 const App: FC = () => {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
   const [marcData, setMarcData] = useState<MarcData | undefined>();
-  const [errorPresent, setErrorPresent] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorPresent, setErrorPresent] = useState<Boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<String>("");
 
   let sruUrl = "";
   if (queryParams.auth_id) {
@@ -70,27 +75,25 @@ const App: FC = () => {
         if (firstAxiosCompleted && !secondAxiosCompleted) {
           setErrorPresent(true);
           setErrorMessage(
-            "Could not reach server while parsing the retrieved data, please try again"
+            "Failed to prepare the data for presentation, please try again. \nCould not reach server while parsing the retrieved data."
           );
         }
 
         if (!firstAxiosCompleted && !secondAxiosCompleted) {
           setErrorPresent(true);
           setErrorMessage(
-            "Resource not found. There exists no resource matching the provided ID, check the URL for possible errors"
+            "Resource not found. \nThere exists no resource matching the provided ID, check the URL for possible errors."
           );
         }
         if (sruUrl === "") {
           setErrorPresent(true);
           setErrorMessage(
-            "Missing search params in the URL. Make sure that the complete URL with search paramaters is provided."
+            `Resource not found. \nSearch parameters have not been included in the URL.`
           );
         }
       } catch (e) {
         setErrorPresent(true);
-        setErrorMessage(
-          "Could not reach server while retrieving resource, please try again"
-        );
+        setErrorMessage("Failed to retrieve the resource, please try again.");
       }
     }
     getAndParseXMLData();
@@ -107,7 +110,9 @@ const App: FC = () => {
   return (
     <>
       {errorPresent ? (
-        <h2> {errorMessage} </h2>
+        <ErrorTextField>
+          <b>{errorMessage}</b>
+        </ErrorTextField>
       ) : (
         <Metadata marcData={marcData} />
       )}

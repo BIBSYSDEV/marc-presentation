@@ -76,7 +76,7 @@ const App: FC = () => {
         }
       } catch (e) {
         setErrorPresent(true);
-        setErrorMessage("Could not reach server");
+        setErrorMessage("Could not reach server while retrieving resource");
       }
     }
     getAndParseXMLData();

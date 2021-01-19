@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
+import Header from "./components/Header";
 import queryString from "query-string";
 import { MarcData } from "./types";
 
@@ -92,6 +93,7 @@ const App: FC = () => {
 
   return (
     <>
+      <Header />
       {errorPresent ? (
         <h2> {errorMessage} </h2>
       ) : (

@@ -29,17 +29,13 @@ const App: FC = () => {
     if (queryParams.institution) {
       sruUrl += "&institution=" + queryParams.institution;
     }
-  } else {
-    if (!errorPresent) {
-      setErrorPresent(true);
-      setErrorMessage("Missing search params in the URL");
-    }
   }
 
   useEffect(() => {
     async function getAndParseXMLData() {
       try {
-        let axiosCompleted;
+        let firstAxiosCompleted = false;
+        let secondAxiosCompleted = false;
         await axios
           .get(sruUrl)
           .then((response) => {
@@ -59,6 +55,7 @@ const App: FC = () => {
               recordStartIndex,
               recordEndIndex
             )}`;
+            if (xmlRecord.length > 40) firstAxiosCompleted = true;
             axios
               .post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
               .then((response) => {
@@ -67,16 +64,33 @@ const App: FC = () => {
               .then((marcData) => {
                 setMarcData(marcData);
                 setErrorPresent(false);
-                axiosCompleted = true;
+                secondAxiosCompleted = true;
               });
           });
-        if (!axiosCompleted) {
+        if (firstAxiosCompleted && !secondAxiosCompleted) {
           setErrorPresent(true);
-          setErrorMessage("Resource not found");
+          setErrorMessage(
+            "Could not reach server while parsing the retrieved data, please try again"
+          );
+        }
+
+        if (!firstAxiosCompleted && !secondAxiosCompleted) {
+          setErrorPresent(true);
+          setErrorMessage(
+            "Resource not found. There exists no resource matching the provided ID, check the URL for possible errors"
+          );
+        }
+        if (sruUrl === "") {
+          setErrorPresent(true);
+          setErrorMessage(
+            "Missing search params in the URL. Make sure that the complete URL with search paramaters is provided."
+          );
         }
       } catch (e) {
         setErrorPresent(true);
-        setErrorMessage("Could not reach server while retrieving resource");
+        setErrorMessage(
+          "Could not reach server while retrieving resource, please try again"
+        );
       }
     }
     getAndParseXMLData();
@@ -114,9 +128,7 @@ const App: FC = () => {
       >
         LineFormat
       </Button>
-      {errorPresent ? (
-        <div></div>
-      ) : (
+      {!errorPresent && (
         <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
       )}
     </>

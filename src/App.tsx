@@ -68,13 +68,11 @@ const App: FC = () => {
               recordEndIndex
             )}`;
             if (xmlRecord.length > 40) firstAxiosCompleted = true; //
-            console.log("Got here");
             return xmlRecord;
           });
         await axios
           .post(marc21XmlParserUrl, { xmlRecord: resourceXmlResponse })
           .then((response) => {
-            console.log("Got here as well");
             return response.data;
           })
           .then((marcData) => {

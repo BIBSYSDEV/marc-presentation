@@ -31,6 +31,7 @@ const App: FC = () => {
       let sruUrl = "";
       let firstAxiosCompleted = false;
       let secondAxiosCompleted = false;
+      let resourceXmlResponse = "";
       if (queryParams.auth_id) {
         sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
       } else if (queryParams.mms_id) {
@@ -39,8 +40,15 @@ const App: FC = () => {
           sruUrl += "&institution=" + queryParams.institution;
         }
       }
+      if (sruUrl === "") {
+        setErrorPresent(true);
+        setErrorMessage(
+          `Resource not found. \nSearch parameters have not been included in the URL.`
+        );
+        return;
+      }
       try {
-        const resourceXmlResponse = await axios
+        resourceXmlResponse = await axios
           .get(sruUrl)
           .then((response) => {
             return response.data;
@@ -59,12 +67,14 @@ const App: FC = () => {
               recordStartIndex,
               recordEndIndex
             )}`;
-            if (xmlRecord.length > 40) firstAxiosCompleted = true;
+            if (xmlRecord.length > 40) firstAxiosCompleted = true; //
+            console.log("Got here");
             return xmlRecord;
           });
         await axios
           .post(marc21XmlParserUrl, { xmlRecord: resourceXmlResponse })
           .then((response) => {
+            console.log("Got here as well");
             return response.data;
           })
           .then((marcData) => {
@@ -72,29 +82,23 @@ const App: FC = () => {
             setErrorPresent(false);
             secondAxiosCompleted = true;
           });
-
-        if (firstAxiosCompleted && !secondAxiosCompleted) {
-          setErrorPresent(true);
-          setErrorMessage(
-            "Failed to prepare the data for presentation, please try again. \nCould not reach server while parsing the retrieved data."
-          );
-        }
-
+      } catch (e) {
         if (!firstAxiosCompleted && !secondAxiosCompleted) {
           setErrorPresent(true);
           setErrorMessage(
             "Resource not found. \nThere exists no resource matching the provided ID, check the URL for possible errors."
           );
         }
-        if (sruUrl === "") {
+        if (firstAxiosCompleted && !secondAxiosCompleted) {
           setErrorPresent(true);
           setErrorMessage(
-            `Resource not found. \nSearch parameters have not been included in the URL.`
+            "Failed to prepare the data for presentation, please try again. \nCould not reach server while parsing the retrieved data."
           );
         }
-      } catch (e) {
-        setErrorPresent(true);
-        setErrorMessage("Failed to retrieve the resource, please try again.");
+        if (resourceXmlResponse === "") {
+          setErrorPresent(true);
+          setErrorMessage("Failed to retrieve the resource, please try again.");
+        }
       }
     }
     getAndParseXMLData();

@@ -26,22 +26,21 @@ const App: FC = () => {
   const [errorPresent, setErrorPresent] = useState<Boolean>(false);
   const [errorMessage, setErrorMessage] = useState<String>("");
 
-  let sruUrl = "";
-  if (queryParams.auth_id) {
-    sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
-  } else if (queryParams.mms_id) {
-    sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
-    if (queryParams.institution) {
-      sruUrl += "&institution=" + queryParams.institution;
-    }
-  }
-
   useEffect(() => {
     async function getAndParseXMLData() {
+      let sruUrl = "";
+      let firstAxiosCompleted = false;
+      let secondAxiosCompleted = false;
+      if (queryParams.auth_id) {
+        sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
+      } else if (queryParams.mms_id) {
+        sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
+        if (queryParams.institution) {
+          sruUrl += "&institution=" + queryParams.institution;
+        }
+      }
       try {
-        let firstAxiosCompleted = false;
-        let secondAxiosCompleted = false;
-        await axios
+        const resourceXmlResponse = await axios
           .get(sruUrl)
           .then((response) => {
             return response.data;
@@ -61,17 +60,19 @@ const App: FC = () => {
               recordEndIndex
             )}`;
             if (xmlRecord.length > 40) firstAxiosCompleted = true;
-            axios
-              .post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
-              .then((response) => {
-                return response.data;
-              })
-              .then((marcData) => {
-                setMarcData(marcData);
-                setErrorPresent(false);
-                secondAxiosCompleted = true;
-              });
+            return xmlRecord;
           });
+        await axios
+          .post(marc21XmlParserUrl, { xmlRecord: resourceXmlResponse })
+          .then((response) => {
+            return response.data;
+          })
+          .then((marcData) => {
+            setMarcData(marcData);
+            setErrorPresent(false);
+            secondAxiosCompleted = true;
+          });
+
         if (firstAxiosCompleted && !secondAxiosCompleted) {
           setErrorPresent(true);
           setErrorMessage(
@@ -97,7 +98,7 @@ const App: FC = () => {
       }
     }
     getAndParseXMLData();
-  }, [sruUrl]);
+  }, []);
 
   const showXML = () => {
     setShowXMLPressed(true);

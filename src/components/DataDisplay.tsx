@@ -28,12 +28,12 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
       setXmlPresentation(
         marcData.xmlPresentation
           ? marcData.xmlPresentation
-          : "Failed to parse a XML version"
+          : "Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page."
       );
       setLinePresentation(
         marcData.linePresentation
           ? marcData.linePresentation
-          : "Failed to parse a lineformat version"
+          : "Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page."
       );
       setMarcDataReady(true);
     }

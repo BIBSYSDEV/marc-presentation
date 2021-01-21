@@ -6,6 +6,7 @@ import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
 import Header from "./components/Header";
 import queryString from "query-string";
+import styled from "styled-components";
 import { MarcData } from "./types";
 
 const almaSruUrl = "https://api.sandbox.bibs.aws.unit.no/alma";
@@ -16,32 +17,39 @@ const queryParams = queryString.parse(window.location.search);
 const RECORD_START_TAG = "<record ";
 const RECORD_END_TAG = "</record>";
 
+const ErrorTextField = styled.div`
+  white-space: pre-line;
+`;
+
 const App: FC = () => {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
   const [marcData, setMarcData] = useState<MarcData | undefined>();
-  const [errorPresent, setErrorPresent] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  let sruUrl = "";
-  if (queryParams.auth_id) {
-    sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
-  } else if (queryParams.mms_id) {
-    sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
-    if (queryParams.institution) {
-      sruUrl += "&institution=" + queryParams.institution;
-    }
-  } else {
-    if (!errorPresent) {
-      setErrorPresent(true);
-      setErrorMessage("Missing search params in the URL");
-    }
-  }
+  const [errorPresent, setErrorPresent] = useState<Boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<String>("");
 
   useEffect(() => {
     async function getAndParseXMLData() {
+      let sruUrl = "";
+      let firstAxiosCompleted = false;
+      let secondAxiosCompleted = false;
+      let resourceXmlResponse = "";
+      if (queryParams.auth_id) {
+        sruUrl = authoritySruUrl + "?auth_id=" + queryParams.auth_id;
+      } else if (queryParams.mms_id) {
+        sruUrl = almaSruUrl + "?mms_id=" + queryParams.mms_id;
+        if (queryParams.institution) {
+          sruUrl += "&institution=" + queryParams.institution;
+        }
+      }
+      if (sruUrl === "") {
+        setErrorPresent(true);
+        setErrorMessage(
+          `Resource not found. \nSearch parameters have not been included in the URL.`
+        );
+        return;
+      }
       try {
-        let axiosCompleted;
-        await axios
+        resourceXmlResponse = await axios
           .get(sruUrl)
           .then((response) => {
             return response.data;
@@ -60,28 +68,40 @@ const App: FC = () => {
               recordStartIndex,
               recordEndIndex
             )}`;
-            axios
-              .post(marc21XmlParserUrl, { xmlRecord: xmlRecord })
-              .then((response) => {
-                return response.data;
-              })
-              .then((marcData) => {
-                setMarcData(marcData);
-                setErrorPresent(false);
-                axiosCompleted = true;
-              });
+            if (xmlRecord.length > 40) firstAxiosCompleted = true; //
+            return xmlRecord;
           });
-        if (!axiosCompleted) {
-          setErrorPresent(true);
-          setErrorMessage("Resource not found");
-        }
+        await axios
+          .post(marc21XmlParserUrl, { xmlRecord: resourceXmlResponse })
+          .then((response) => {
+            return response.data;
+          })
+          .then((marcData) => {
+            setMarcData(marcData);
+            setErrorPresent(false);
+            secondAxiosCompleted = true;
+          });
       } catch (e) {
-        setErrorPresent(true);
-        setErrorMessage("Could not reach server while retrieving resource");
+        if (!firstAxiosCompleted && !secondAxiosCompleted) {
+          setErrorPresent(true);
+          setErrorMessage(
+            "Resource not found. \nThere exists no resource matching the provided ID, check the URL for possible errors."
+          );
+        }
+        if (firstAxiosCompleted && !secondAxiosCompleted) {
+          setErrorPresent(true);
+          setErrorMessage(
+            "Failed to prepare the data for presentation, please try again. \nCould not reach server while parsing the retrieved data."
+          );
+        }
+        if (resourceXmlResponse === "") {
+          setErrorPresent(true);
+          setErrorMessage("Failed to retrieve the resource, please try again.");
+        }
       }
     }
     getAndParseXMLData();
-  }, [sruUrl]);
+  }, []);
 
   const showXML = () => {
     setShowXMLPressed(true);
@@ -95,7 +115,9 @@ const App: FC = () => {
     <>
       <Header />
       {errorPresent ? (
-        <h2> {errorMessage} </h2>
+        <ErrorTextField>
+          <b>{errorMessage}</b>
+        </ErrorTextField>
       ) : (
         <Metadata marcData={marcData} />
       )}
@@ -116,9 +138,7 @@ const App: FC = () => {
       >
         LineFormat
       </Button>
-      {errorPresent ? (
-        <div></div>
-      ) : (
+      {!errorPresent && (
         <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
       )}
     </>

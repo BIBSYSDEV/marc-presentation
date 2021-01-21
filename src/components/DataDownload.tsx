@@ -1,57 +1,51 @@
-import React, {useState, useEffect, FC} from "react";
-import {Button} from "@material-ui/core";
-import {MarcData} from "../types";
+import React, { useState, useEffect, FC } from 'react';
+import { Button } from '@material-ui/core';
+import { MarcData } from '../types';
 
 interface DataDownloadProps {
-    marcData?: MarcData
+  marcData?: MarcData;
 }
 
-const DataDownload: FC<DataDownloadProps> = ({ marcData}) => {
-    const [xmlContent, setXmlContent] = useState("");
-    const [lineContent, setLineContent] = useState("");
+const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
+  const [xmlContent, setXmlContent] = useState('');
+  const [lineContent, setLineContent] = useState('');
 
-    useEffect(() => {
-        if (marcData) {
-            setXmlContent(marcData.xmlPresentation ?? "");
-            setLineContent(marcData.linePresentation ?? "");
-        }
-    }, [marcData]);
-
-    function createDownload(content: string, filename: string, mimetype: string) {
-        const elem = window.document.createElement('a');
-        const blob = new Blob([content], {type: mimetype});
-        elem.download = filename;
-        elem.href = window.URL.createObjectURL(blob);
-        document.body.appendChild(elem);
-        elem.click();
-        document.body.removeChild(elem);
+  useEffect(() => {
+    if (marcData) {
+      setXmlContent(marcData.xmlPresentation ?? '');
+      setLineContent(marcData.linePresentation ?? '');
     }
+  }, [marcData]);
 
-    const downloadXmlContent = () => {
-        createDownload(xmlContent, 'marcpresentation.xml', 'application/xml');
-    };
+  function createDownload(content: string, filename: string, mimetype: string) {
+    const elem = window.document.createElement('a');
+    const blob = new Blob([content], { type: mimetype });
+    elem.download = filename;
+    elem.href = window.URL.createObjectURL(blob);
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
+  }
 
-    const downloadLineContent = () => {
-        createDownload(lineContent, 'marcpresentation.txt', 'text/plain');
-    };
+  const downloadXmlContent = () => {
+    createDownload(xmlContent, 'marcpresentation.xml', 'application/xml');
+  };
 
-    return (
-        <>
-            <Button
-                variant="outlined"
-                onClick={downloadXmlContent}
-            >
-                Download XML
-            </Button>
-            {"  "}
-            <Button
-                variant="outlined"
-                onClick={downloadLineContent}
-            >
-                Download Lineformat
-            </Button>
-        </>
-    );
+  const downloadLineContent = () => {
+    createDownload(lineContent, 'marcpresentation.txt', 'text/plain');
+  };
+
+  return (
+    <>
+      <Button variant="outlined" onClick={downloadXmlContent}>
+        Download XML
+      </Button>
+      {'  '}
+      <Button variant="outlined" onClick={downloadLineContent}>
+        Download Lineformat
+      </Button>
+    </>
+  );
 };
 
 export default DataDownload;

@@ -22,8 +22,11 @@ const ErrorTextField = styled.div`
 `;
 
 const LogoImgWrapper = styled.img`
+  position: absolute;
   height: 5rem;
   width: 15rem;
+  bottom: 2rem;
+  right: 2rem;
 `;
 
 const App: FC = () => {

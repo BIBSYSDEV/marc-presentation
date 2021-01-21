@@ -4,9 +4,9 @@ import Button from "@material-ui/core/Button";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
-import Header from "./components/Header";
 import queryString from "query-string";
 import styled from "styled-components";
+import unitLogo from "./resources/logoUnit.png";
 import { MarcData } from "./types";
 
 const almaSruUrl = "https://api.sandbox.bibs.aws.unit.no/alma";
@@ -19,6 +19,11 @@ const RECORD_END_TAG = "</record>";
 
 const ErrorTextField = styled.div`
   white-space: pre-line;
+`;
+
+const LogoImgWrapper = styled.img`
+  height: 5rem;
+  width: 15rem;
 `;
 
 const App: FC = () => {
@@ -113,7 +118,6 @@ const App: FC = () => {
 
   return (
     <>
-      <Header />
       {errorPresent ? (
         <ErrorTextField>
           <b>{errorMessage}</b>
@@ -141,6 +145,7 @@ const App: FC = () => {
       {!errorPresent && (
         <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
       )}
+      <LogoImgWrapper src={unitLogo} alt="Unit logo"></LogoImgWrapper>
     </>
   );
 };

@@ -7,6 +7,7 @@ import Metadata from "./components/Metadata";
 import queryString from "query-string";
 import styled from "styled-components";
 import { MarcData } from "./types";
+import DataDownload from './components/DataDownload';
 
 const almaSruUrl = "https://api.sandbox.bibs.aws.unit.no/alma";
 const authoritySruUrl = "https://api.sandbox.bibs.aws.unit.no/authority";
@@ -138,6 +139,9 @@ const App: FC = () => {
       </Button>
       {!errorPresent && (
         <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
+      )}
+      {!errorPresent && (
+        <DataDownload marcData={marcData} />
       )}
     </>
   );

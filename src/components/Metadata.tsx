@@ -1,9 +1,40 @@
 import React, { useState, useEffect, FC } from "react";
 import { Author, MarcData } from "../types";
+import styled from "styled-components";
 
 interface MetadataProps {
   marcData?: MarcData;
 }
+
+const TitleLable = styled.div`
+  color: rgba(0, 0, 0, 1);
+  font-size: 2.25rem;
+  font-family: Crimson Text, serif;
+  font-weight: 300;
+  line-height: 3rem;
+  letter-spacing: 0.0025em;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-bottom: 1px solid grey;
+`;
+
+const AuthorLable = styled.span`
+  font-size: 1.25rem;
+  font-family: Barlow, sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-left: 1rem;
+  padding-right: 1rem;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+`;
+
+const YearLable = styled.span`
+  font-size: 1.25rem;
+  font-family: Barlow, sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-left: 1rem;
+`;
 
 const Metadata: FC<MetadataProps> = ({ marcData }) => {
   const [marcDataReady, setMarcDataReady] = useState(false);
@@ -24,9 +55,9 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
     <div>
       {marcDataReady ? (
         <>
-          <h1>{title}</h1>
-          <h2>{author}</h2>
-          <h2>{year}</h2>
+          <TitleLable>{title}</TitleLable>
+          <AuthorLable>{author}</AuthorLable>
+          <YearLable>{year}</YearLable>
         </>
       ) : (
         <h1>Laster data ...</h1>

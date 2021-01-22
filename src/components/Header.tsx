@@ -5,7 +5,9 @@ import UnitLogo from "../resources/logoUnit.png";
 const Bar = styled.div`
   height: 5rem;
   width: 100%;
-  background-color: rgba(99, 34, 107, 0.15);
+  margin-bottom: 1rem;
+  box-shadow: 0px 5px 5px grey;
+  background-color: white;
 `;
 const Title = styled.span`
   position: absolute;
@@ -27,7 +29,7 @@ const Divider = styled.span`
 const LogoImgWrapper = styled.img`
   position: absolute;
   height: 3rem;
-  width: 15rem;
+  width: 10rem;
   right: 1rem;
   top: 1rem;
   line-height: 5rem;
@@ -37,7 +39,7 @@ const Header: FC = () => {
   return (
     <Bar>
       <Title>
-        Marc Presentation <Divider></Divider>
+        MARC-visning <Divider></Divider>
       </Title>
 
       <LogoImgWrapper src={UnitLogo} alt="Unit logo"></LogoImgWrapper>

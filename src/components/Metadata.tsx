@@ -8,7 +8,7 @@ interface MetadataProps {
 
 const TitleLable = styled.div`
   color: rgba(0, 0, 0, 1);
-  font-size: 2.25rem;
+  font-size: 1.5rem;
   font-family: Crimson Text, serif;
   font-weight: 300;
   line-height: 3rem;
@@ -24,8 +24,6 @@ const AuthorLable = styled.span`
   font-weight: 500;
   line-height: 1.6;
   margin-left: 1rem;
-  padding-right: 1rem;
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
 `;
 
 const YearLable = styled.span`
@@ -34,6 +32,8 @@ const YearLable = styled.span`
   font-weight: 500;
   line-height: 1.6;
   margin-left: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
 `;
 
 const Metadata: FC<MetadataProps> = ({ marcData }) => {
@@ -55,9 +55,9 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
     <div>
       {marcDataReady ? (
         <>
-          <TitleLable>{title}</TitleLable>
-          <AuthorLable>{author}</AuthorLable>
-          <YearLable>{year}</YearLable>
+          {title && <TitleLable>{title}</TitleLable>}
+          {author && <AuthorLable>{author}</AuthorLable>}
+          {year && <YearLable>{year}</YearLable>}
         </>
       ) : (
         <h1>Laster data ...</h1>

@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
-import Button from "@material-ui/core/Button";
 import "./App.css";
 import DataDisplay from "./components/DataDisplay";
 import Metadata from "./components/Metadata";
@@ -17,8 +16,36 @@ const queryParams = queryString.parse(window.location.search);
 const RECORD_START_TAG = "<record ";
 const RECORD_END_TAG = "</record>";
 
+const OuterContainer = styled.div`
+  background-color: #e0e0e0;
+  position: absolute;
+  bottom: 0rem;
+  top: 0rem;
+  right: 0rem;
+  left: 0;
+`;
+
 const ErrorTextField = styled.div`
   white-space: pre-line;
+`;
+/** 
+const Buttons = styled.button`
+  background-color: rgba(0, 97, 134, 1);
+  border-radius: 5px;
+  border: 1px solid;
+  margin-left: 1rem;
+  font-family: Barlow, sans-serif;
+  font-size: 1.25rem;
+`;
+
+*/
+
+const RadioLable = styled.label`
+  font-family: Barlow, sans-serif;
+  font-size: 1.25rem;
+  margin-left: 1rem;
+  margin-top: 1rem;
+  display: inline-block;
 `;
 
 const App: FC = () => {
@@ -112,7 +139,7 @@ const App: FC = () => {
   };
 
   return (
-    <>
+    <OuterContainer>
       <Header></Header>
       {errorPresent ? (
         <ErrorTextField>
@@ -121,27 +148,24 @@ const App: FC = () => {
       ) : (
         <Metadata marcData={marcData} />
       )}
-      <Button
-        variant="contained"
-        color={showXMLPressed ? "primary" : "default"}
-        disableElevation={!showXMLPressed}
+      <RadioLable>Velg format: XML</RadioLable>
+      <input
+        type="radio"
+        value="xml"
         onClick={showXML}
-      >
-        XML
-      </Button>
-      {"  "}
-      <Button
-        variant="contained"
-        color={showXMLPressed ? "default" : "primary"}
-        disableElevation={showXMLPressed}
+        checked={showXMLPressed}
+      />
+      <RadioLable>Linjeformat</RadioLable>
+      <input
+        type="radio"
+        value="linjeFormat"
         onClick={showLineFormat}
-      >
-        LineFormat
-      </Button>
+        checked={!showXMLPressed}
+      />
       {!errorPresent && (
         <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
       )}
-    </>
+    </OuterContainer>
   );
 };
 

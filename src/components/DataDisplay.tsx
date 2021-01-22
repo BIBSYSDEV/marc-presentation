@@ -13,7 +13,7 @@ const DataFieldWrapper = styled.div`
 `;
 
 interface DataDisplayProps {
-  marcData?: MarcData;
+  marcData: MarcData;
   showAsXMLInput: boolean;
 }
 
@@ -24,19 +24,17 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
   const [linePresentation, setLinePresentation] = useState('');
 
   useEffect(() => {
-    if (marcData) {
-      setXmlPresentation(
-        marcData.xmlPresentation
-          ? marcData.xmlPresentation
-          : 'Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
-      );
-      setLinePresentation(
-        marcData.linePresentation
-          ? marcData.linePresentation
-          : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
-      );
-      setMarcDataReady(true);
-    }
+    setXmlPresentation(
+      marcData.xmlPresentation
+        ? marcData.xmlPresentation
+        : 'Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
+    );
+    setLinePresentation(
+      marcData.linePresentation
+        ? marcData.linePresentation
+        : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
+    );
+    setMarcDataReady(true);
     setShowAsXML(showAsXMLInput);
   }, [marcData, showAsXMLInput]);
 

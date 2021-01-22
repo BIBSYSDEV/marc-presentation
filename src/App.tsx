@@ -112,23 +112,27 @@ const App: FC = () => {
       ) : (
         <Metadata marcData={marcData} />
       )}
-      <Button
-        variant="contained"
-        color={showXMLPressed ? 'primary' : 'default'}
-        disableElevation={!showXMLPressed}
-        onClick={showXML}>
-        XML
-      </Button>
+      {marcData && (
+        <Button
+          variant="contained"
+          color={showXMLPressed ? 'primary' : 'default'}
+          disableElevation={!showXMLPressed}
+          onClick={showXML}>
+          XML
+        </Button>
+      )}
       {'  '}
-      <Button
-        variant="contained"
-        color={showXMLPressed ? 'default' : 'primary'}
-        disableElevation={showXMLPressed}
-        onClick={showLineFormat}>
-        LineFormat
-      </Button>
-      {!errorPresent && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
-      {!errorPresent && <DataDownload marcData={marcData} />}
+      {marcData && (
+        <Button
+          variant="contained"
+          color={showXMLPressed ? 'default' : 'primary'}
+          disableElevation={showXMLPressed}
+          onClick={showLineFormat}>
+          LineFormat
+        </Button>
+      )}
+      {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
+      {!errorPresent && marcData && <DataDownload marcData={marcData} />}
     </>
   );
 };

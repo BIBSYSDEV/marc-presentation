@@ -3,7 +3,7 @@ import { Button } from '@material-ui/core';
 import { MarcData } from '../types';
 
 interface DataDownloadProps {
-  marcData?: MarcData;
+  marcData: MarcData;
 }
 
 const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
@@ -11,10 +11,8 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
   const [lineContent, setLineContent] = useState('');
 
   useEffect(() => {
-    if (marcData) {
-      setXmlContent(marcData.xmlPresentation ?? '');
-      setLineContent(marcData.linePresentation ?? '');
-    }
+    setXmlContent(marcData.xmlPresentation ?? '');
+    setLineContent(marcData.linePresentation ?? '');
   }, [marcData]);
 
   function createDownload(content: string, filename: string, mimetype: string) {

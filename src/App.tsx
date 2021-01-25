@@ -141,12 +141,13 @@ const App: FC = () => {
       ) : (
         <Metadata marcData={marcData} />
       )}
-      {marcData && <RadioLable>Velg format: XML</RadioLable> && (
-        <input type="radio" value="xml" onClick={showXML} checked={showXMLPressed} />
-      )}
-      {marcData && <RadioLable>Linjeformat</RadioLable> && (
+      {!errorPresent && marcData && <RadioLable>Velg format: XML</RadioLable>}
+      {!errorPresent && marcData && <input type="radio" value="xml" onClick={showXML} checked={showXMLPressed} />}
+      {!errorPresent && marcData && <RadioLable>Linjeformat</RadioLable>}
+      {!errorPresent && marcData && (
         <input type="radio" value="linjeFormat" onClick={showLineFormat} checked={!showXMLPressed} />
       )}
+
       {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
       {!errorPresent && marcData && <DataDownload marcData={marcData} />}
     </OuterContainer>

@@ -1,6 +1,6 @@
-import React, { FC } from "react";
-import styled from "styled-components";
-import UnitLogo from "../resources/logoUnit.png";
+import React, { FC } from 'react';
+import styled from 'styled-components';
+import UnitLogo from '../resources/logoUnit.png';
 
 const Bar = styled.div`
   height: 5rem;

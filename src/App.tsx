@@ -18,7 +18,7 @@ const RECORD_START_TAG = '<record ';
 const RECORD_END_TAG = '</record>';
 
 const OuterContainer = styled.div`
-  background-color: #e0e0e0;
+  background-color: #fafafa;
   position: absolute;
   bottom: 0rem;
   top: 0rem;
@@ -29,24 +29,17 @@ const OuterContainer = styled.div`
 const ErrorTextField = styled.div`
   white-space: pre-line;
 `;
-/** 
-const Buttons = styled.button`
-  background-color: rgba(0, 97, 134, 1);
-  border-radius: 5px;
-  border: 1px solid;
-  margin-left: 1rem;
-  font-family: Barlow, sans-serif;
-  font-size: 1.25rem;
-`;
-
-*/
 
 const RadioLable = styled.label`
   font-family: Barlow, sans-serif;
   font-size: 1.25rem;
-  margin-left: 1rem;
+  margin-right: 1rem;
   margin-top: 1rem;
   display: inline-block;
+`;
+
+const RadioContainer = styled.div`
+  margin-left: 1rem;
 `;
 
 const App: FC = () => {
@@ -141,13 +134,15 @@ const App: FC = () => {
       ) : (
         <Metadata marcData={marcData} />
       )}
-      {!errorPresent && marcData && <RadioLable>Velg format: XML</RadioLable>}
-      {!errorPresent && marcData && <input type="radio" value="xml" onClick={showXML} checked={showXMLPressed} />}
-      {!errorPresent && marcData && <RadioLable>Linjeformat</RadioLable>}
       {!errorPresent && marcData && (
-        <input type="radio" value="linjeFormat" onClick={showLineFormat} checked={!showXMLPressed} />
+        <RadioContainer>
+          <RadioLable>Velg format:</RadioLable>
+          <input type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
+          <RadioLable>XML</RadioLable>
+          <input type="radio" value="linjeFormat" checked={!showXMLPressed} onChange={showLineFormat} />
+          <RadioLable>Linjeformat</RadioLable>
+        </RadioContainer>
       )}
-
       {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
       {!errorPresent && marcData && <DataDownload marcData={marcData} />}
     </OuterContainer>

@@ -10,6 +10,7 @@ const Bar = styled.div`
   background-color: white;
 `;
 const Title = styled.span`
+  color: rgb(40, 75, 99);
   position: absolute;
   font-size: 1.5rem;
   font-family: Crimson Text, serif;

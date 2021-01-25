@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { MarcData } from '../types';
 
 const DataField = styled.textarea`
-  height: 23rem;
+  height: 21rem;
   width: 90%;
   maring-left: 1rem;
 `;
 
 const DataFieldWrapper = styled.div`
-  height: 23rem;
+  height: 21rem;
   width: 90%;
   margin-left: 1rem;
 `;

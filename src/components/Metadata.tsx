@@ -7,10 +7,10 @@ interface MetadataProps {
 }
 
 const TitleLable = styled.div`
-  color: rgba(0, 0, 0, 1);
+  color: rgb(0, 0, 0, 1);
   font-size: 1.5rem;
-  font-family: Crimson Text, serif;
-  font-weight: 300;
+  font-family: Barlow, sans-serif;
+  font-weight: Bold;
   line-height: 3rem;
   letter-spacing: 0.0025em;
   margin-left: 1rem;

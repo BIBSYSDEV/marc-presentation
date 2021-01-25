@@ -7,6 +7,7 @@ import Metadata from './components/Metadata';
 import queryString from 'query-string';
 import styled from 'styled-components';
 import { MarcData } from './types';
+import DataDownload from './components/DataDownload';
 
 const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
 const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
@@ -111,22 +112,27 @@ const App: FC = () => {
       ) : (
         <Metadata marcData={marcData} />
       )}
-      <Button
-        variant="contained"
-        color={showXMLPressed ? 'primary' : 'default'}
-        disableElevation={!showXMLPressed}
-        onClick={showXML}>
-        XML
-      </Button>
+      {marcData && (
+        <Button
+          variant="contained"
+          color={showXMLPressed ? 'primary' : 'default'}
+          disableElevation={!showXMLPressed}
+          onClick={showXML}>
+          XML
+        </Button>
+      )}
       {'  '}
-      <Button
-        variant="contained"
-        color={showXMLPressed ? 'default' : 'primary'}
-        disableElevation={showXMLPressed}
-        onClick={showLineFormat}>
-        LineFormat
-      </Button>
-      {!errorPresent && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
+      {marcData && (
+        <Button
+          variant="contained"
+          color={showXMLPressed ? 'default' : 'primary'}
+          disableElevation={showXMLPressed}
+          onClick={showLineFormat}>
+          LineFormat
+        </Button>
+      )}
+      {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
+      {!errorPresent && marcData && <DataDownload marcData={marcData} />}
     </>
   );
 };

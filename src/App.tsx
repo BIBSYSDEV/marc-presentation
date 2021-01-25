@@ -31,14 +31,16 @@ const ErrorTextField = styled.div`
 `;
 
 const RadioLable = styled.label`
+  margin-right: 0.5rem;
+  cursor: pointer;
+`;
+
+const RadioContainer = styled.div`
   font-family: Barlow, sans-serif;
   font-size: 1.25rem;
   margin-right: 1rem;
   margin-top: 1rem;
   display: inline-block;
-`;
-
-const RadioContainer = styled.div`
   margin-left: 1rem;
 `;
 
@@ -136,11 +138,11 @@ const App: FC = () => {
       )}
       {!errorPresent && marcData && (
         <RadioContainer>
-          <RadioLable>Velg format:</RadioLable>
+          Velg format:
           <input type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
-          <RadioLable>XML</RadioLable>
+          <RadioLable onClick={showXML}>XML</RadioLable>
           <input type="radio" value="linjeFormat" checked={!showXMLPressed} onChange={showLineFormat} />
-          <RadioLable>Linjeformat</RadioLable>
+          <RadioLable onClick={showLineFormat}>Linjeformat</RadioLable>
         </RadioContainer>
       )}
       {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}

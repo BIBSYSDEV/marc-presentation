@@ -20,17 +20,18 @@ const RECORD_END_TAG = '</record>';
 const OuterContainer = styled.div`
   background-color: #fafafa;
   position: absolute;
-  bottom: 0rem;
-  top: 0rem;
-  right: 0rem;
+  bottom: 0;
+  top: 0;
+  right: 0;
   left: 0;
 `;
 
 const ErrorTextField = styled.div`
   white-space: pre-line;
+  font-weight: Bold;
 `;
 
-const RadioLable = styled.label`
+const RadioLabel = styled.label`
   margin-right: 0.5rem;
   cursor: pointer;
 `;
@@ -128,21 +129,15 @@ const App: FC = () => {
 
   return (
     <OuterContainer>
-      <Header></Header>
-      {errorPresent ? (
-        <ErrorTextField>
-          <b>{errorMessage}</b>
-        </ErrorTextField>
-      ) : (
-        <Metadata marcData={marcData} />
-      )}
+      <Header />
+      {errorPresent ? <ErrorTextField>{errorMessage}</ErrorTextField> : <Metadata marcData={marcData} />}
       {!errorPresent && marcData && (
         <RadioContainer>
           Velg format:
           <input type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
-          <RadioLable onClick={showXML}>XML</RadioLable>
+          <RadioLabel onClick={showXML}>XML</RadioLabel>
           <input type="radio" value="linjeFormat" checked={!showXMLPressed} onChange={showLineFormat} />
-          <RadioLable onClick={showLineFormat}>Linjeformat</RadioLable>
+          <RadioLabel onClick={showLineFormat}>Linjeformat</RadioLabel>
         </RadioContainer>
       )}
       {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}

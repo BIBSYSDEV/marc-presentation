@@ -134,10 +134,20 @@ const App: FC = () => {
       {!errorPresent && marcData && (
         <RadioContainer>
           Velg format:
-          <input type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
-          <RadioLabel onClick={showXML}>XML</RadioLabel>
-          <input type="radio" value="linjeFormat" checked={!showXMLPressed} onChange={showLineFormat} />
-          <RadioLabel onClick={showLineFormat}>Linjeformat</RadioLabel>
+          <input aria-labelledby="xml" type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
+          <RadioLabel id="xml" onClick={showXML}>
+            XML
+          </RadioLabel>
+          <input
+            aria-labelledby="linjeformat"
+            type="radio"
+            value="linjeFormat"
+            checked={!showXMLPressed}
+            onChange={showLineFormat}
+          />
+          <RadioLabel id="linjeformat" onClick={showLineFormat}>
+            Linjeformat
+          </RadioLabel>
         </RadioContainer>
       )}
       {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}

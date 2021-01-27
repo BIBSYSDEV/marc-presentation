@@ -1,3 +1,37 @@
+# Marc-presentation
+A simple react app
+
+The project consist only of a signle AWS CloudFormation script. It is ment to:
+* set up a S3 Bucket and CloudFront distribution.
+* set up a pipeline for building and deploying react app updates to the S3 bucket. The pipeline invalidates the CloudFront cache after copy to S3.
+
+Prerequisites (shared resources):
+* HostedZone: [sandbox|dev|test|prod].bibs.aws.unit.no
+* Create a CodeStarConnection that allows CodePipeline to get events from and read the GitHub repository
+
+  The user creating the connection must have permission to create "apps" i GitHub
+* Alert stack with SNS Topic
+* ACM certificate created in us-east-1
+* SSM Parameter Store Parameters:
+  * /marcpresentation/cloudFrontCertificateArn = [certificate Arn from above]
+  * /hostedzone/name = [sandbox|dev|test|prod].bibs.aws.unit.no
+  * /hostedzone/id = [hosted zone id]
+  * /marcpresentation/domainName = marcpresentation.[sandbox|dev|test|prod].bibs.aws.unit.no
+  * /alert/topicArn = [SNS Topic ARN]
+  * /github-connection = (CodeStarConnections ARN from above)
+
+Bootstrap:
+* Create the following CloudFormation stack manually using the AWS Web Console, CLI or API:
+  * Stack for pipeline/CICD. This will bootstrap the app stack (template.yml)
+    * Template: pipeline.yml
+    * Name: marcpresentation-cloudfront-and-pipeline
+    * Parameters:
+      * GitBranch=develop
+      * GitRepo=BIBSYSDEV/marc-presentation
+      * PipelineApprovalAction=[Yes|No] (No for non-prod?)
+      * (Optional) PipelineApprovalEmail=[email address]
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

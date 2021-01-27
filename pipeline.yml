@@ -1,0 +1,847 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CloudFront and Continuous Deployment setup for marcpresentation stack
+
+# Name:
+# Recommended: marcpresentation-cloudfront-and-pipeline
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Git Settings
+        Parameters:
+          - GitRepo
+          - GitBranch
+      - Label:
+          default: Pipeline approval
+        Parameters:
+          - PipelineApprovalAction
+          - PipelineApprovalEmail
+      - Label:
+          default: Alert Configuration
+        Parameters:
+          - AlertTopicArn
+      - Label:
+          default: Domain settings
+        Parameters:
+          - HostedZoneId
+          - HostedZoneName
+          - SubDomainNameWithDot
+    ParameterLabels:
+      GitRepo:
+        default: Git Repo
+      GitBranch:
+        default: Git Branch
+      PipelineApprovalAction:
+        default: Approval action
+      PipelineApprovalEmail:
+        default: Email address
+      AlertTopicArn:
+        default: SSM Parameter for the SNS Alert Topic Arn
+      HostedZoneId:
+        default: HostedZone Id
+      HostedZoneName:
+        default: HostedZone Name
+      SubDomainNameWithDot:
+        default: Sub domain name with trailing .
+
+Parameters:
+  CodeStarConnectionArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: '/github-connection'
+    Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
+  GitRepo:
+    Type: String
+    Default: BIBSYSDEV/marc-presentation
+    Description: Git repository name
+  GitBranch:
+    Type: String
+    Default: develop
+    Description: Git repository branch
+  PipelineApprovalAction:
+    Description: Do you want to add a manual approval action to the Release stage of this Pipeline?
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'No'
+    Type: String
+  PipelineApprovalEmail:
+    Type: String
+    Default: ''
+    Description: The target email address for pipeline approval messages. Required when PipelineApprovalAction is Yes
+    AllowedPattern: '(^$|^[_A-Za-z0-9-\+\.]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$)'
+    ConstraintDescription: Valid email address or empty
+  AlertTopicArn:
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/alert/topicArn'
+  SubDomainNameWithDot:
+    Description: "Name that is used to create the DNS entry, with trailing dot, e.g.\
+      \ \xA7{SubDomainNameWithDot}\xA7{HostedZoneName}. Leave blank for naked (or\
+      \ apex and bare) domain. Requires ParentZoneStack parameter!"
+    Type: String
+    Default: 'marcpresentation.'
+  HostedZoneId:
+    Description: 'The Route53 hosted zone ID'
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/hostedzone/id'
+  HostedZoneName:
+    Description: 'The Route53 hosted zone name'
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/hostedzone/name'
+  DomainCertificateArn:
+    Description: 'The domain certificate ARN'
+    Type: 'AWS::SSM::Parameter::Value<String>'
+    Default: '/marcpresentation/cloudFrontCertificateArn'
+  ExistingBucketName:
+    Description: '(Optional) The name of an existing S3 bucket, or empty to create a new bucket'
+    Type: String
+    Default: ''
+    MinLength: 0
+    MaxLength: 100
+    AllowedPattern: '(^$|^[A-Za-z0-9-]+$)'
+    ConstraintDescription: 'Valid bucket name'
+
+Conditions:
+  IsPipelineApprovalActionCondition: !Equals [!Ref PipelineApprovalAction, 'Yes']
+  HasApprovalEmailAddress: !Not [!Equals [!Ref PipelineApprovalEmail, '']]
+  HasAlertTopic: !Not [!Equals [!Ref AlertTopicArn, '']]
+  IsCreateNewBucketCondition: !Equals [!Ref ExistingBucketName, '']
+
+Resources:
+  ArtifactsBucket:
+    Type: 'AWS::S3::Bucket'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: "Skip access logging for artifacts bucket"
+          - id: W41
+            reason: "Skip encryption for artifacts bucket"
+          - id: W51
+            reason: "Skip bucket policy for artifacts bucket"
+    DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: IntelligentTieringRule
+            Status: Enabled
+            Transition:
+              StorageClass: INTELLIGENT_TIERING
+              TransitionInDays: 30
+
+  PipelineApprovalTopic:
+    Type: AWS::SNS::Topic
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W47
+            reason: KMS key not relevant
+    Condition: IsPipelineApprovalActionCondition
+    Properties:
+      Subscription: # When adding Subscription, SNS formats the messages before sending
+        - !If [HasApprovalEmailAddress, {Endpoint: !Ref PipelineApprovalEmail, Protocol: email}, !Ref 'AWS::NoValue']
+
+  PipelineRole:
+    Type: 'AWS::IAM::Role'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: Pipeline needs these permissions
+          - id: W76
+            reason: Pipeline needs these permissions
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'codepipeline.amazonaws.com'
+          Action:
+          - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: CodePipelineAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:PassRole
+                Resource: !GetAtt CloudFormationRole.Arn
+                Condition:
+                  StringEqualsIfExists:
+                    iam:PassedToService:
+                      - cloudformation.amazonaws.com
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetBucketVersioning
+                Resource:
+                  - !Sub ${ArtifactsBucket.Arn}
+                  - !If [IsCreateNewBucketCondition, !GetAtt WebsiteBucket.Arn, !Sub 'arn:aws:s3:::${ExistingBucketName}']
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:PutObjectAcl
+                  - s3:CreateMultipartUpload
+                  - s3:ListMultipartUploadParts
+                  - s3:AbortMultipartUpload
+                  - s3:DeleteObject
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                Resource:
+                  - !Sub '${ArtifactsBucket.Arn}/*'
+                  - !If [IsCreateNewBucketCondition, !Sub '${WebsiteBucket.Arn}/*', !Sub 'arn:aws:s3:::${ExistingBucketName}/*']
+              - Effect: Allow
+                Action:
+                  - cloudformation:DescribeStacks
+                  - cloudformation:CreateStack
+                  - cloudformation:UpdateStack
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:DeleteChangeSet
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:${AWS::Region}:${AWS::AccountId}:stack/${AWS::StackName}/*'
+              - Effect: Allow
+                Action:
+                  - codestar-connections:UseConnection
+                Resource: !Ref CodeStarConnectionArn
+              - Effect: Allow
+                Action:
+                  - codebuild:BatchGetBuilds
+                  - codebuild:StartBuild
+                Resource:
+                  - !GetAtt CodeBuildProject.Arn
+              - !If
+                - IsPipelineApprovalActionCondition
+                - Effect: "Allow"
+                  Action:
+                    - "sns:Publish"
+                  Resource: !Ref PipelineApprovalTopic
+                - !Ref AWS::NoValue
+              - Action:
+                  - 'lambda:InvokeFunction'
+                Effect: Allow
+                Resource:
+                  - !GetAtt InvalidateCloudfrontDistribution.Arn
+              - Action:
+                  - 'ssm:getParameters'
+                Effect: Allow
+                Resource: '*'
+
+  CloudFormationRole:
+    Type: 'AWS::IAM::Role'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: CloudFormation needs permissions to create/update/delete resources in a stack (allow * resource in policy)
+          - id: F38
+            reason: CloudFormation needs permissions to create/update/delete resources in a stack (allow * resource with PassRole action on permissions policy)
+          - id: F3
+            reason: CloudFormation needs permissions to create/update/delete resources in a stack (allow * action on permissions policy)
+          - id: W76
+            reason: CloudFormation needs permissions to create/update/delete resources in a stack
+    Properties:
+      Description: 'This role is used both for the CodePipeline CFN stack, and the application CFN stack'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'cloudformation.amazonaws.com'
+          Action:
+          - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: CloudFormationAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - apigateway:*
+                  - application-autoscaling:*
+                  - autoscaling:*
+                  - cloudformation:*
+                  - cloudfront:*
+                  - cloudwatch:*
+                  - codebuild:*
+                  - codepipeline:*
+                  - ec2:*
+                  - ecs:*
+                  - elasticfilesystem:*
+                  - elasticloadbalancing:*
+                  - events:*
+                  - iam:*
+                  - lambda:*
+                  - logs:*
+                  - kms:*
+                  - rds:*
+                  - s3:*
+                  - secretsmanager:*
+                  - sns:*
+                  - ssm:*
+                  - resource-groups:*
+                  - route53:* # GetHostedZone
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - codestar-connections:PassConnection
+                Resource: !Ref CodeStarConnectionArn
+
+  CodeBuildRole:
+    DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: "Allow Resource 'bucket/*' for s3 and Resource '*' for CloudWatch Logs."
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - 'codebuild.amazonaws.com'
+          Action:
+          - 'sts:AssumeRole'
+      Policies:
+      - PolicyName: ServiceRole
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Sid: CloudWatchLogsPolicy
+            Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*'
+          - Sid: S3GetPutObjects
+            Effect: Allow
+            Action:
+            - s3:GetObject
+            - s3:GetObjectVersion
+            - s3:PutObject
+#            - s3:PutObjectAcl
+            - s3:CreateMultipartUpload
+            - s3:ListMultipartUploadParts
+            - s3:AbortMultipartUpload
+            Resource: !Sub
+            - 'arn:aws:s3:::${BucketName}/*'
+            - BucketName: !Ref ArtifactsBucket
+
+  CodeBuildProject:
+    DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
+    Type: 'AWS::CodeBuild::Project'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W32
+            reason: "Skip encryption for CodeBuild project"
+    Properties:
+      Artifacts:
+        Type: CODEPIPELINE
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: S3_BUCKET
+            Value: !Ref ArtifactsBucket
+      Name: !Sub '${AWS::StackName}-build'
+      ServiceRole: !GetAtt 'CodeBuildRole.Arn'
+      Source:
+        Type: CODEPIPELINE
+      TimeoutInMinutes: 30
+      Cache:
+        Type: S3
+        Location: !Sub '${ArtifactsBucket}/codebuildcache'
+
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Sub '${AWS::StackName}-Pipeline'
+      RoleArn: !GetAtt PipelineRole.Arn
+      RestartExecutionOnUpdate: true
+#      DisableInboundStageTransitions:
+#        - Reason: Approve Step
+#          StageName: Release
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactsBucket
+      Tags:
+        - Key: 'automation:approval-timeout'
+          Value: '1'
+      Stages:
+      - Name: Source
+        Actions:
+        - Name: Source
+          ActionTypeId:
+            Category: Source
+            Owner: AWS
+            Version: '1'
+            Provider: CodeStarSourceConnection
+          Configuration:
+            ConnectionArn: !Ref CodeStarConnectionArn
+            FullRepositoryId: !Ref GitRepo
+            BranchName: !Ref GitBranch
+            OutputArtifactFormat: "CODE_ZIP"
+          OutputArtifacts: [Name: SourceArtifacts]
+          Namespace: SourceVariables
+          RunOrder: 1
+      - Name: Build
+        Actions:
+        - Name: TestAndBuildApp
+          ActionTypeId:
+            Category: Build
+            Owner: AWS
+            Provider: CodeBuild
+            Version: '1'
+          Configuration:
+            ProjectName: !Ref CodeBuildProject
+          InputArtifacts:
+          - Name: SourceArtifacts
+          OutputArtifacts:
+          - Name: BuildArtifacts
+          RunOrder: 1
+      - Name: UpdatePipeline
+        Actions:
+        - Name: DeployPipeline
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Provider: CloudFormation
+            Version: '1'
+          Configuration:
+            ActionMode: REPLACE_ON_FAILURE
+            RoleArn: !GetAtt 'CloudFormationRole.Arn'
+            StackName: !Ref 'AWS::StackName'
+            Capabilities: CAPABILITY_IAM
+            TemplatePath: 'SourceArtifacts::pipeline.yml'
+            ParameterOverrides: !Sub |
+              {
+                "CodeStarConnectionArn": "/github-connection",
+                "GitRepo": "${GitRepo}",
+                "GitBranch": "${GitBranch}",
+                "PipelineApprovalAction": "${PipelineApprovalAction}",
+                "PipelineApprovalEmail": "${PipelineApprovalEmail}",
+                "AlertTopicArn": "/alert/topicArn",
+                "HostedZoneId": "/hostedzone/id",
+                "HostedZoneName": "/hostedzone/name",
+                "SubDomainNameWithDot": "${SubDomainNameWithDot}",
+                "DomainCertificateArn": "/marcpresentation/cloudFrontCertificateArn",
+                "ExistingBucketName": "${ExistingBucketName}"
+              }
+          InputArtifacts:
+          - Name: SourceArtifacts
+          RunOrder: 1
+      - Name: Release
+        Actions:
+        - !If
+          - IsPipelineApprovalActionCondition
+          - Name: ApprovalForRelease
+            ActionTypeId:
+              Category: Approval
+              Owner: AWS
+              Version: '1'
+              Provider: Manual
+            Configuration:
+              NotificationArn: !Ref PipelineApprovalTopic
+              CustomData: !Sub 'A new release is ready for the ${AWS::StackName} stack in account ${AWS::AccountId}. Commit message: "#{SourceVariables.CommitMessage}". Do you want to deploy the changes?'
+              ExternalEntityLink: 'https://aws.unit.no'
+            RunOrder: 1
+          - !Ref AWS::NoValue
+        - Name: CopyApplicationtoS3
+          ActionTypeId:
+            Category: Deploy
+            Owner: AWS
+            Provider: S3
+            Version: '1'
+          InputArtifacts:
+            - Name: BuildArtifacts
+          Configuration:
+            BucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+#            ObjectKey: '{datetime}/' # TODO
+            Extract: true
+          RunOrder: 2
+        - Name: InvalidateDistribution
+          ActionTypeId:
+            Category: Invoke
+            Owner: AWS
+            Provider: Lambda
+            Version: '1'
+          Configuration:
+            FunctionName: !Ref InvalidateCloudfrontDistribution
+            UserParameters: !Sub '{"distribution_id": "${CloudFrontDistribution}"}'
+          RunOrder: 3
+
+  PipelineFailedNotification:
+    Type: 'AWS::Events::Rule'
+    Condition: HasAlertTopic
+    Properties:
+      EventPattern:
+        source:
+          - 'aws.codepipeline'
+        detail-type:
+          - 'CodePipeline Pipeline Execution State Change'
+        resources:
+          - !Ref Pipeline
+        detail:
+          state:
+            - FAILED
+      State: ENABLED
+      Targets:
+      - Arn: !Ref AlertTopicArn
+        Id: rule
+
+  InvalidateCloudfrontDistribution:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: |
+          import boto3
+          import sys
+          import json
+          import datetime
+          import botocore
+
+          def handler(event, context):
+              print(json.dumps(event, default=str))
+
+              client = boto3.client('cloudfront')
+
+              timestamp_string = datetime.datetime.utcnow().strftime("%Y%m%d%H%M%S.%f")
+              data = event['CodePipeline.job']['data']
+              param = json.loads(data['actionConfiguration']['configuration'].get('UserParameters','{}'))
+              distributionId = param['distribution_id']
+
+              codepipeline = boto3.client('codepipeline')
+              job = event['CodePipeline.job']['id'];
+
+              try:
+                  response = client.create_invalidation(
+                      DistributionId=distributionId,
+                      InvalidationBatch={
+                          'Paths': {
+                              'Quantity': 1,
+                              'Items': [
+                                  '/*',
+                              ]
+                          },
+                          'CallerReference': timestamp_string
+                      }
+                  )
+
+                  print(json.dumps(response, default=str))
+
+                  invalidation_id = response['Invalidation']['Id']
+
+                  waiter = client.get_waiter('invalidation_completed')
+
+                  # Waits up to 10 mins
+                  waiter.wait(
+                      DistributionId=distributionId,
+                      Id=invalidation_id
+                  )
+
+                  codepipeline.put_job_success_result(jobId=job);
+                  return "Invalidation complete"
+              except botocore.exceptions.ClientError as e:
+                  print('ClientError')
+                  print(e)
+                  print(e.response['Error']['Code'])
+              except botocore.exceptions.WaiterError as e:
+                  print('WaiterError')
+                  print(e)
+              except:
+                  print("Exception:",sys.exc_info()[0])
+
+              codepipeline.put_job_failure_result(
+                  jobId=job,
+                  failureDetails={
+                      'type': 'JobFailed',
+                      'message': 'Invalidation Failed'
+                  });
+              return "Invalidation failed"
+
+      Role: !GetAtt InvalidateCloudfrontDistributionFunctionRole.Arn
+      Handler: index.handler
+      Description: Lambda to invalidate Cloudfront distribution
+      Runtime: python3.8
+      Timeout: 900
+
+  InvalidateCloudfrontDistributionFunctionRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: "Resource * required for codepipeline:PutJob*"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: '/'
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+      Policies:
+        - PolicyName: InvalidateCloudformationDistributionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: CreateGetInvalidation
+                Effect: Allow
+                Action:
+                  - 'cloudfront:CreateInvalidation'
+                  - 'cloudfront:GetInvalidation'
+                Resource: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}'
+              - Sid: SetPipelineResult
+                Effect: Allow
+                Action:
+                  - 'codepipeline:PutJobSuccessResult'
+                  - 'codepipeline:PutJobFailureResult'
+                Resource: '*'
+
+  WebsiteBucket:
+    Type: 'AWS::S3::Bucket'
+    Condition: IsCreateNewBucketCondition
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: "Access logging handled by CloudFront"
+          - id: W41
+            reason: "Skip encryption for website bucket"
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      MetricsConfigurations:
+        - Id: EntireBucket
+      Tags:
+        - Key: description
+          Value: !Sub "Frontend for ${AWS::StackName}"
+
+  WebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: IsCreateNewBucketCondition
+    Properties:
+      Bucket: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+      PolicyDocument:
+        Statement:
+          - Effect: 'Allow'
+            Action:
+              - 's3:GetObject'
+            Resource: !Sub
+              - 'arn:aws:s3:::${WebsiteBucketName}/*'
+              - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+            Principal:
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}'
+
+  CloudFrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: !Sub
+          - '${WebsiteBucketName}-access-identity'
+          - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W70
+            reason: "Cloudfront _does_ use minimum protocol version TLS 1.2"
+    Properties:
+      DistributionConfig:
+        Comment: CDN for static website stored in S3
+        Aliases:
+          - !Sub '${SubDomainNameWithDot}${HostedZoneName}'
+        DefaultCacheBehavior:
+          AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+          CachedMethods: ["GET", "HEAD", "OPTIONS"]
+          Compress: true
+          DefaultTTL: 0
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          TargetOriginId: !Sub
+            - 'S3-${WebsiteBucketName}'
+            - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: 'index.html'
+        PriceClass: PriceClass_100
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: blacklist
+            Locations:
+              - RU
+              - CN
+        ViewerCertificate:
+          AcmCertificateArn: !Ref DomainCertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2019
+        CustomErrorResponses:
+          - ErrorCode: 404
+            ErrorCachingMinTTL: 10
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+          - ErrorCode: 403
+            ErrorCachingMinTTL: 10
+            ResponseCode: 200
+            ResponsePagePath: '/index.html'
+          - ErrorCachingMinTTL: 0
+            ErrorCode: 400
+          - ErrorCachingMinTTL: 5
+            ErrorCode: 500
+        Logging:
+          Bucket: !GetAtt CloudFrontAccessLogsBucket.DomainName
+        Enabled: true
+        Origins:
+          - DomainName: !Sub
+            - '${WebsiteBucketName}.s3.${AWS::Region}.amazonaws.com'
+            - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+            Id: !Sub
+              - 'S3-${WebsiteBucketName}'
+              - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}'
+            #OriginPath: /timestamp # TODO
+
+  CloudFrontAccessLogsBucket:
+    Type: AWS::S3::Bucket
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: "Skip access log for this bucket"
+          - id: W41
+            reason: "Skip encryption for access log bucket"
+          - id: W51
+            reason: "Use default bucket policy"
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: description
+          Value: !Sub "CloudFront AccessLogs for ${AWS::StackName}"
+
+  CloudFrontTotalErrorRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: "Allow explicit name"
+    Properties:
+      AlarmName: !Sub "CloudFront-Errors-${AWS::StackName}"
+      AlarmDescription: "CDN error monitor"
+      MetricName: TotalErrorRate
+      Namespace: AWS/CloudFront
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref CloudFrontDistribution
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      Threshold: 5
+      AlarmActions:
+        - !Ref AlertTopicArn
+
+  CloudFrontTotalCacheHitRateAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: "Allow explicit name"
+    Properties:
+      AlarmName: !Sub "CloudFront-Cache-Hit-Rate-${AWS::StackName}"
+      AlarmDescription: "CDN cache monitor"
+      MetricName: CacheHitRate
+      Namespace: AWS/CloudFront
+      Dimensions:
+        - Name: DistributionId
+          Value: !Ref CloudFrontDistribution
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 1
+      ComparisonOperator: LessThanOrEqualToThreshold
+      Threshold: .80
+      AlarmActions:
+        - !Ref AlertTopicArn
+
+  RecordSet:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      ResourceRecords:
+        - !GetAtt CloudFrontDistribution.DomainName
+      HostedZoneId: !Ref HostedZoneId
+      Comment: CNAME for website
+      Name: !Sub '${SubDomainNameWithDot}${HostedZoneName}'
+      TTL: 900
+      Type: CNAME
+
+Outputs:
+  WebsiteBucketName:
+    Description: The name of the website bucket
+    Value: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+
+  CloudFrontDistribution:
+    Value: !Ref CloudFrontDistribution
+
+  CloudFrontDomainName:
+    Description: CloudFront domain name (For reference)
+    Value: !GetAtt CloudFrontDistribution.DomainName
+
+  AppCustomDomainName:
+    Description: App custom domain name
+    Value: !Ref RecordSet
+
+  AppEndpointURL:
+    Description: App endpoint URL
+    Value: !Sub 'https://${RecordSet}'
+
+  ArtifactsBucket:
+    Description: The artifacts bucket
+    Value: !Ref ArtifactsBucket

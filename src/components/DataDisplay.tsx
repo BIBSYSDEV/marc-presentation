@@ -4,12 +4,15 @@ import { MarcData } from '../types';
 
 const DataField = styled.textarea`
   height: 20rem;
-  width: 30rem;
+  width: 90%;
+  maring-left: 1rem;
+  resize: none;
 `;
 
 const DataFieldWrapper = styled.div`
   height: 20rem;
-  width: 30rem;
+  width: 90%;
+  margin-left: 1rem;
 `;
 
 interface DataDisplayProps {

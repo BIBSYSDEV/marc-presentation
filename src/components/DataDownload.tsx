@@ -1,10 +1,29 @@
 import React, { useState, useEffect, FC } from 'react';
-import { Button } from '@material-ui/core';
 import { MarcData } from '../types';
+import styled from 'styled-components';
 
 interface DataDownloadProps {
   marcData: MarcData;
 }
+
+const Buttons = styled.button`
+  && {
+    background-color: rgb(40, 75, 99);
+    border-radius: 5px;
+    border: 1px solid;
+    border-color: rgb(40, 75, 99);
+    margin-left: 1rem;
+    margin-top: 0.7rem;
+    padding: 0.5rem;
+    font-family: Barlow, sans-serif;
+    font-size: 1.1rem;
+    color: white;
+    cursor: pointer;
+    &:focus {
+      background-color: orange;
+    }
+  }
+`;
 
 const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
   const [xmlContent, setXmlContent] = useState('');
@@ -35,13 +54,9 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
 
   return (
     <>
-      <Button variant="outlined" onClick={downloadXmlContent}>
-        Download XML
-      </Button>
+      <Buttons onClick={downloadXmlContent}>Last ned XML</Buttons>
       {'  '}
-      <Button variant="outlined" onClick={downloadLineContent}>
-        Download Lineformat
-      </Button>
+      <Buttons onClick={downloadLineContent}>Last ned Linjeformat</Buttons>
     </>
   );
 };

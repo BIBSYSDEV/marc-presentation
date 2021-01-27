@@ -1,9 +1,46 @@
 import React, { useState, useEffect, FC } from 'react';
 import { Author, MarcData } from '../types';
+import styled from 'styled-components';
 
 interface MetadataProps {
   marcData?: MarcData;
 }
+
+const TitleLabel = styled.h1`
+  color: rgb(0, 0, 0, 1);
+  font-size: 1.5rem;
+  font-family: Barlow, sans-serif;
+  font-weight: Bold;
+  line-height: 3rem;
+  letter-spacing: 0.0025em;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-bottom: 1px solid grey;
+`;
+
+const AuthorLabel = styled.h2`
+  font-size: 1.25rem;
+  font-family: Barlow, sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-left: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline;
+`;
+
+const YearLabel = styled.h2`
+  font-size: 1.25rem;
+  font-family: Barlow, sans-serif;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-left: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+  display: inline;
+`;
 
 const Metadata: FC<MetadataProps> = ({ marcData }) => {
   const [marcDataReady, setMarcDataReady] = useState(false);
@@ -24,9 +61,9 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
     <div>
       {marcDataReady ? (
         <>
-          <h1>{title}</h1>
-          <h2>{author}</h2>
-          <h2>{year}</h2>
+          {title && <TitleLabel aria-label="Title">{title}</TitleLabel>}
+          {author && <AuthorLabel aria-label="Author">{author}</AuthorLabel>}
+          {year && <YearLabel aria-label="Year">{year}</YearLabel>}
         </>
       ) : (
         <h1>Laster data ...</h1>

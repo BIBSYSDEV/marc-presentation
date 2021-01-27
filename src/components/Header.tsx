@@ -9,7 +9,7 @@ const Bar = styled.div`
   box-shadow: 0px 5px 5px grey;
   background-color: white;
 `;
-const Title = styled.span`
+const Title = styled.h1`
   color: rgb(40, 75, 99);
   position: absolute;
   font-size: 1.5rem;
@@ -17,6 +17,7 @@ const Title = styled.span`
   font-weight: 400;
   line-height: 5rem;
   margin-left: 1rem;
+  margin-top: 0rem;
 `;
 
 const Divider = styled.span`

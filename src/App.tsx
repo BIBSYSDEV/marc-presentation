@@ -40,7 +40,7 @@ const RadioContainer = styled.div`
   font-family: Barlow, sans-serif;
   font-size: 1.25rem;
   margin-right: 1rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   display: inline-block;
   margin-left: 1rem;
 `;

@@ -6,7 +6,7 @@ interface MetadataProps {
   marcData?: MarcData;
 }
 
-const TitleLabel = styled.div`
+const TitleLabel = styled.h1`
   color: rgb(0, 0, 0, 1);
   font-size: 1.5rem;
   font-family: Barlow, sans-serif;
@@ -18,22 +18,28 @@ const TitleLabel = styled.div`
   border-bottom: 1px solid grey;
 `;
 
-const AuthorLabel = styled.span`
+const AuthorLabel = styled.h2`
   font-size: 1.25rem;
   font-family: Barlow, sans-serif;
   font-weight: 500;
   line-height: 1.6;
   margin-left: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline;
 `;
 
-const YearLabel = styled.span`
+const YearLabel = styled.h2`
   font-size: 1.25rem;
   font-family: Barlow, sans-serif;
   font-weight: 500;
   line-height: 1.6;
   margin-left: 1rem;
+  margin-top: 0;
+  margin-bottom: 0;
   padding-left: 1rem;
   border-left: 1px solid rgba(0, 0, 0, 0.3);
+  display: inline;
 `;
 
 const Metadata: FC<MetadataProps> = ({ marcData }) => {

@@ -7,17 +7,22 @@ interface DataDownloadProps {
 }
 
 const Buttons = styled.button`
-  background-color: rgb(40, 75, 99);
-  border-radius: 5px;
-  border: 1px solid;
-  border-color: rgb(40, 75, 99);
-  margin-left: 1rem;
-  margin-top: 0.7rem;
-  padding: 0.5rem;
-  font-family: Barlow, sans-serif;
-  font-size: 1.1rem;
-  color: white;
-  cursor: pointer;
+  && {
+    background-color: rgb(40, 75, 99);
+    border-radius: 5px;
+    border: 1px solid;
+    border-color: rgb(40, 75, 99);
+    margin-left: 1rem;
+    margin-top: 0.7rem;
+    padding: 0.5rem;
+    font-family: Barlow, sans-serif;
+    font-size: 1.1rem;
+    color: white;
+    cursor: pointer;
+    &:focus {
+      background-color: orange;
+    }
+  }
 `;
 
 const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {

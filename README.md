@@ -1,7 +1,7 @@
 # marc presentation
 A simple react app
 
-The project consist only of a signle AWS CloudFormation script. It is ment to:
+The project consist only of a single AWS CloudFormation script. It is meant to:
 * set up a S3 Bucket and CloudFront distribution.
 * set up a pipeline for building and deploying react app updates to the S3 bucket. The pipeline invalidates the CloudFront cache after copy to S3.
 
@@ -10,14 +10,13 @@ Prerequisites (shared resources):
 * Create a CodeStarConnection that allows CodePipeline to get events from and read the GitHub repository
 
   The user creating the connection must have permission to create "apps" i GitHub
-* Alert stack with SNS Topic
-* ACM certificate created in us-east-1
+* Alert stack with SNS Topic (name: alert-topic)
+* ACM certificate stack created in us-east-1 (name: acm-cert-marcpresentation)
 * SSM Parameter Store Parameters:
   * /marcpresentation/cloudFrontCertificateArn = [certificate Arn from above]
   * /hostedzone/name = [sandbox|dev|test|prod].bibs.aws.unit.no
   * /hostedzone/id = [hosted zone id]
   * /marcpresentation/domainName = marcpresentation.[sandbox|dev|test|prod].bibs.aws.unit.no
-  * /alert/topicArn = [SNS Topic ARN]
   * /github-connection = (CodeStarConnections ARN from above)
 
 Bootstrap:
@@ -26,7 +25,7 @@ Bootstrap:
     * Template: pipeline.yml
     * Name: marcpresentation-cloudfront-and-pipeline
     * Parameters:
-      * GitBranch=develop
+      * GitBranch=develop|master|main
       * GitRepo=BIBSYSDEV/marc-presentation
       * PipelineApprovalAction=[Yes|No] (No for non-prod?)
       * (Optional) PipelineApprovalEmail=[email address]

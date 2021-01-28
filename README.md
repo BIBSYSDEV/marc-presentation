@@ -1,4 +1,4 @@
-# marc presentation
+# Marc-presentation
 A simple react app
 
 The project consist only of a single AWS CloudFormation script. It is meant to:

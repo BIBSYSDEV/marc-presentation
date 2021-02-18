@@ -9,9 +9,9 @@ import { MarcData } from './types';
 import DataDownload from './components/DataDownload';
 import Header from './components/Header';
 
-const almaSruUrl = 'https://api.sandbox.bibs.aws.unit.no/alma';
-const authoritySruUrl = 'https://api.sandbox.bibs.aws.unit.no/authority';
-const marc21XmlParserUrl = 'https://api.sandbox.bibs.aws.unit.no/marc21';
+const almaSruUrl = 'https://api.bibs.aws.unit.no/alma';
+const authoritySruUrl = 'https://api.bibs.aws.unit.no/authority';
+const marc21XmlParserUrl = 'https://api.bibs.aws.unit.no/marc21';
 const queryParams = queryString.parse(window.location.search);
 
 const RECORD_START_TAG = '<record ';

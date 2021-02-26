@@ -69,8 +69,8 @@ const App: FC = () => {
           .then((response) => {
             return response.data;
           })
-          .then((marcData) => {
-            setMarcData(marcData);
+          .then((marcDataList) => {
+            setMarcData(marcDataList[0]);
             setErrorPresent(false);
           });
       } catch (e) {

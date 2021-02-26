@@ -51,6 +51,11 @@ In the project directory, you can run:
 
 ### `npm start`
 
+Provide environment variables when using npm start. This is OS-specific. For macOS or linux start the application
+locally with the following command:
+
+### `REACT_APP_ALMA_API_URL=https://api.sandbox.bibs.aws.unit.no/alma REACT_APP_AUTHORITY_API_URL=https://api.sandbox.bibs.aws.unit.no/authority npm start`
+
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 

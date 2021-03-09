@@ -24,7 +24,7 @@ phases:
       - echo $CODEBUILD_WEBHOOK_TRIGGER
       - echo $CODEBUILD_WEBHOOK_BASE_REF
       - echo $CODEBUILD_SRC_DIR
-      - { % set x = "Friday" % }
+      - set x = "Friday"
       - |
         if [ x == "Friday" ]; then
           echo "It works"

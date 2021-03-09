@@ -25,8 +25,7 @@ phases:
       - echo $CODEBUILD_WEBHOOK_BASE_REF
       - echo $CODEBUILD_SRC_DIR
       - set fullPathBranch = $CODEBUILD_WEBHOOK_HEAD_REF
-      - set stringList = fullPathBranch.split('/')
-      - echo stringList[2]
+      - echo fullPathBranch[:7]
       - |
         if [ true ]; then
           echo "It works"

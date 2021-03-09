@@ -45,11 +45,12 @@ phases:
       - echo Building Node app...
       - set fullPathBranch = $CODEBUILD_WEBHOOK_HEAD_REF
       - |
-        if [ fullPathBranch[:3] == "ref" ]; then
-          echo "It works"
+        if [ fullPathBranch[12:] == "main" ]; then
+          npm run build-production
         fi
-
-      - npm run build-$CODEBUILD_WEBHOOK_HEAD_REF
+        if [ fullPathBranch[12:] != "main" ]; then
+          npm run build-development
+        fi
 
   post_build:
     commands:

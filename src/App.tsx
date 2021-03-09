@@ -9,6 +9,7 @@ import { MarcData } from './types';
 import DataDownload from './components/DataDownload';
 import Header from './components/Header';
 
+const envTest = process.env.REACT_APP_TEST_VAR;
 const almaSruUrl = process.env.REACT_APP_ALMA_API_URL;
 const authoritySruUrl = process.env.REACT_APP_AUTHORITY_API_URL;
 const queryParams = queryString.parse(window.location.search);
@@ -91,6 +92,7 @@ const App: FC = () => {
 
   return (
     <OuterContainer>
+      <p>{envTest + 'Hei'}</p>
       <Header />
       {errorPresent ? <ErrorTextField>{errorMessage}</ErrorTextField> : <Metadata marcData={marcData} />}
       {!errorPresent && marcData && (

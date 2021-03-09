@@ -24,11 +24,6 @@ phases:
       - echo $CODEBUILD_WEBHOOK_TRIGGER
       - echo $CODEBUILD_WEBHOOK_BASE_REF
       - echo $CODEBUILD_SRC_DIR
-      - set fullPathBranch = $CODEBUILD_WEBHOOK_HEAD_REF
-      - |
-        if [ fullPathBranch[:3] = "ref" ]; then
-          echo "It works"
-        fi
       - env
       - node -v
       - aws --version
@@ -48,6 +43,11 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building Node app...
+      - set fullPathBranch = $CODEBUILD_WEBHOOK_HEAD_REF
+      - |
+        if [ fullPathBranch[:3] == "ref" ]; then
+          echo "It works"
+        fi
 
       - npm run build-$CODEBUILD_WEBHOOK_HEAD_REF
 

@@ -5,14 +5,13 @@ env:
   shell: bash
 
 phases:
-
   install:
     runtime-versions:
       nodejs: 12.x
       ruby: 2.6
     commands:
       - pip3 install --upgrade cfn-lint
-#      - pip3 install --upgrade aws-sam-cli
+      #      - pip3 install --upgrade aws-sam-cli
 
       # Install cfn_nag
       - gem install cfn-nag
@@ -21,6 +20,9 @@ phases:
     commands:
       - echo "pre_build steps for revision ${CODEBUILD_RESOLVED_SOURCE_VERSION}..."
       - pwd
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $CODEBUILD_WEBHOOK_TRIGGER
+      - echo $CODEBUILD_WEBHOOK_BASE_REF
       - echo $CODEBUILD_SRC_DIR
       - env
       - node -v
@@ -29,20 +31,26 @@ phases:
       - cfn_nag -v
 
       # Lint
-      - cfn-lint  # uses .cfnlintrc
+      - cfn-lint # uses .cfnlintrc
 
       # Run cfn-nag (looks for patterns in CFN templates that may indicate insecure infrastructure)
       - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec\.y[a]?ml)((..*\.y[a]?ml)|(..*\.template))$'
 
       - npm install
       - npm audit || true # Just log audit info
-#      - npm audit fix
+  #      - npm audit fix
   build:
     commands:
       - echo Build started on `date`
       - echo Building Node app...
-
-      - npm run build
+      - set fullPathBranch = $CODEBUILD_WEBHOOK_HEAD_REF
+      - |
+        if [ fullPathBranch[12:] == "main" ]; then
+          npm run build-production
+        fi
+        if [ fullPathBranch[12:] != "main" ]; then
+          npm run build-development
+        fi
 
   post_build:
     commands:
@@ -57,4 +65,4 @@ artifacts:
 
 cache:
   paths:
-    - '/node_modules/**/*'  # TODO should we cache this path?
+    - '/node_modules/**/*' # TODO should we cache this path?

@@ -92,7 +92,6 @@ const App: FC = () => {
 
   return (
     <OuterContainer>
-      <p>{envTest + 'Hei'}</p>
       <Header />
       {errorPresent ? <ErrorTextField>{errorMessage}</ErrorTextField> : <Metadata marcData={marcData} />}
       {!errorPresent && marcData && (

@@ -43,14 +43,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building Node app...
-      - set fullPathBranch = $CODEBUILD_WEBHOOK_HEAD_REF
-      - |
-        if [ fullPathBranch[12:] == "main" ]; then
-          npm run build-production
-        fi
-        if [ fullPathBranch[12:] != "main" ]; then
-          npm run build-development
-        fi
+      - npm run build
 
   post_build:
     commands:

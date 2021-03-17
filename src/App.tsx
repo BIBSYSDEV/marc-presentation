@@ -9,13 +9,10 @@ import { MarcData } from './types';
 import DataDownload from './components/DataDownload';
 import Header from './components/Header';
 
-const almaSruUrl = 'https://api.bibs.aws.unit.no/alma';
-const authoritySruUrl = 'https://api.bibs.aws.unit.no/authority';
-const marc21XmlParserUrl = 'https://api.bibs.aws.unit.no/marc21';
+const envTest = process.env.REACT_APP_TEST_VAR;
+const almaSruUrl = process.env.REACT_APP_ALMA_API_URL;
+const authoritySruUrl = process.env.REACT_APP_AUTHORITY_API_URL;
 const queryParams = queryString.parse(window.location.search);
-
-const RECORD_START_TAG = '<record ';
-const RECORD_END_TAG = '</record>';
 
 const OuterContainer = styled.div`
   background-color: #fafafa;
@@ -54,9 +51,6 @@ const App: FC = () => {
   useEffect(() => {
     async function getAndParseXMLData() {
       let sruUrl = '';
-      let firstAxiosCompleted = false;
-      let secondAxiosCompleted = false;
-      let resourceXmlResponse = '';
       if (queryParams.auth_id) {
         sruUrl = authoritySruUrl + '?auth_id=' + queryParams.auth_id;
       } else if (queryParams.mms_id) {
@@ -71,49 +65,18 @@ const App: FC = () => {
         return;
       }
       try {
-        resourceXmlResponse = await axios
+        await axios
           .get(sruUrl)
           .then((response) => {
             return response.data;
           })
-          .then((data) => {
-            const formattedMarc21XML = data.replaceAll('marc:', '').replaceAll('"', "'");
-            const recordStartIndex = formattedMarc21XML.indexOf(RECORD_START_TAG);
-            const recordEndIndex = formattedMarc21XML.indexOf(RECORD_END_TAG) + RECORD_END_TAG.length;
-            const xmlRecord = `<?xml version='1.0' encoding='UTF-8'?>\n${formattedMarc21XML.slice(
-              recordStartIndex,
-              recordEndIndex
-            )}`;
-            if (xmlRecord.length > 40) firstAxiosCompleted = true; //
-            return xmlRecord;
-          });
-        await axios
-          .post(marc21XmlParserUrl, { xmlRecord: resourceXmlResponse })
-          .then((response) => {
-            return response.data;
-          })
-          .then((marcData) => {
-            setMarcData(marcData);
+          .then((marcDataList) => {
+            setMarcData(marcDataList[0]);
             setErrorPresent(false);
-            secondAxiosCompleted = true;
           });
       } catch (e) {
-        if (!firstAxiosCompleted && !secondAxiosCompleted) {
-          setErrorPresent(true);
-          setErrorMessage(
-            'Resource not found. \nThere exists no resource matching the provided ID, check the URL for possible errors.'
-          );
-        }
-        if (firstAxiosCompleted && !secondAxiosCompleted) {
-          setErrorPresent(true);
-          setErrorMessage(
-            'Failed to prepare the data for presentation, please try again. \nCould not reach server while parsing the retrieved data.'
-          );
-        }
-        if (resourceXmlResponse === '') {
-          setErrorPresent(true);
-          setErrorMessage('Failed to retrieve the resource, please try again.');
-        }
+        setErrorPresent(true);
+        setErrorMessage('Failed to retrieve the resource, please try again.');
       }
     }
     getAndParseXMLData();

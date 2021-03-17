@@ -46,6 +46,13 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
+  Stage:
+    Type: String
+    Default: 'dev'
+    AllowedValues:
+      - 'dev'
+      - 'prod'
+    Description: environment/stageing variables
   CodeStarConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/github-connection'
@@ -368,6 +375,7 @@ Resources:
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: CODEPIPELINE
+        BuildSpec: !Join [ "", [ "buildspec", "-", !Ref 'Stage', ".yml" ] ]
       TimeoutInMinutes: 30
       Cache:
         Type: S3

@@ -1,0 +1,61 @@
+---
+version: 0.2
+
+env:
+  shell: bash
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12.x
+      ruby: 2.6
+    commands:
+      - pip3 install --upgrade cfn-lint
+      #      - pip3 install --upgrade aws-sam-cli
+
+      # Install cfn_nag
+      - gem install cfn-nag
+
+  pre_build:
+    commands:
+      - echo "pre_build steps for revision ${CODEBUILD_RESOLVED_SOURCE_VERSION}..."
+      - pwd
+      - echo $CODEBUILD_WEBHOOK_HEAD_REF
+      - echo $CODEBUILD_WEBHOOK_TRIGGER
+      - echo $CODEBUILD_WEBHOOK_BASE_REF
+      - echo $CODEBUILD_SRC_DIR
+      - env
+      - node -v
+      - aws --version
+      - cfn-lint -v
+      - cfn_nag -v
+
+      # Lint
+      - cfn-lint # uses .cfnlintrc
+
+      # Run cfn-nag (looks for patterns in CFN templates that may indicate insecure infrastructure)
+      - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec\.y[a]?ml)((..*\.y[a]?ml)|(..*\.template))$'
+
+      - npm install
+      - npm audit || true # Just log audit info
+  #      - npm audit fix
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building Node app...
+      - npm run build:production
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Files
+      - ls -la
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build
+
+cache:
+  paths:
+    - '/node_modules/**/*' # TODO should we cache this path?

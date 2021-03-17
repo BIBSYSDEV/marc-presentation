@@ -34,7 +34,7 @@ phases:
       - cfn-lint # uses .cfnlintrc
 
       # Run cfn-nag (looks for patterns in CFN templates that may indicate insecure infrastructure)
-      - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec[\-dev|\-prod]?\.y[a]?ml)((..*\.y[a]?ml)|(..*\.template))$'
+      - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec[\-dev|\-prod|]\.y[a]?ml)((..*\.y[a]?ml)|(..*\.template))$'
 
       - npm install
       - npm audit || true # Just log audit info

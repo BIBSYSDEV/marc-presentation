@@ -9,7 +9,6 @@ import { MarcData } from './types';
 import DataDownload from './components/DataDownload';
 import Header from './components/Header';
 
-const envTest = process.env.REACT_APP_TEST_VAR;
 const almaSruUrl = process.env.REACT_APP_ALMA_API_URL;
 const authoritySruUrl = process.env.REACT_APP_AUTHORITY_API_URL;
 const queryParams = queryString.parse(window.location.search);
@@ -73,6 +72,10 @@ const App: FC = () => {
           .then((marcDataList) => {
             setMarcData(marcDataList[0]);
             setErrorPresent(false);
+            if (!marcDataList[0]) {
+              setErrorPresent(true);
+              setErrorMessage('Failed to retrieve the resource. \nCheck that the input parameter(URL) is correct.');
+            }
           });
       } catch (e) {
         setErrorPresent(true);

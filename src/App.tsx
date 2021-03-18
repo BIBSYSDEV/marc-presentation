@@ -72,6 +72,10 @@ const App: FC = () => {
           .then((marcDataList) => {
             setMarcData(marcDataList[0]);
             setErrorPresent(false);
+            if (!marcDataList[0]) {
+              setErrorPresent(true);
+              setErrorMessage('Failed to retrieve the resource, check that the input parameter(URL) is correct.');
+            }
           });
       } catch (e) {
         setErrorPresent(true);

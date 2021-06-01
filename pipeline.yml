@@ -121,11 +121,11 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W35
-            reason: 'Skip access logging for artifacts bucket'
+            reason: "Skip access logging for artifacts bucket"
           - id: W41
-            reason: 'Skip encryption for artifacts bucket'
+            reason: "Skip encryption for artifacts bucket"
           - id: W51
-            reason: 'Skip bucket policy for artifacts bucket'
+            reason: "Skip bucket policy for artifacts bucket"
     DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
@@ -156,7 +156,7 @@ Resources:
     Condition: IsPipelineApprovalActionCondition
     Properties:
       Subscription: # When adding Subscription, SNS formats the messages before sending
-        - !If [HasApprovalEmailAddress, { Endpoint: !Ref PipelineApprovalEmail, Protocol: email }, !Ref 'AWS::NoValue']
+        - !If [HasApprovalEmailAddress, {Endpoint: !Ref PipelineApprovalEmail, Protocol: email}, !Ref 'AWS::NoValue']
 
   PipelineRole:
     Type: 'AWS::IAM::Role'
@@ -196,11 +196,7 @@ Resources:
                   - s3:GetBucketVersioning
                 Resource:
                   - !Sub ${ArtifactsBucket.Arn}
-                  - !If [
-                      IsCreateNewBucketCondition,
-                      !GetAtt WebsiteBucket.Arn,
-                      !Sub 'arn:aws:s3:::${ExistingBucketName}',
-                    ]
+                  - !If [IsCreateNewBucketCondition, !GetAtt WebsiteBucket.Arn, !Sub 'arn:aws:s3:::${ExistingBucketName}']
               - Effect: Allow
                 Action:
                   - s3:PutObject
@@ -213,11 +209,7 @@ Resources:
                   - s3:GetObjectVersion
                 Resource:
                   - !Sub '${ArtifactsBucket.Arn}/*'
-                  - !If [
-                      IsCreateNewBucketCondition,
-                      !Sub '${WebsiteBucket.Arn}/*',
-                      !Sub 'arn:aws:s3:::${ExistingBucketName}/*',
-                    ]
+                  - !If [IsCreateNewBucketCondition, !Sub '${WebsiteBucket.Arn}/*', !Sub 'arn:aws:s3:::${ExistingBucketName}/*']
               - Effect: Allow
                 Action:
                   - cloudformation:DescribeStacks
@@ -241,9 +233,9 @@ Resources:
                   - !GetAtt CodeBuildProject.Arn
               - !If
                 - IsPipelineApprovalActionCondition
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
-                    - 'sns:Publish'
+                    - "sns:Publish"
                   Resource: !Ref PipelineApprovalTopic
                 - !Ref AWS::NoValue
               - Action:
@@ -368,7 +360,7 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W32
-            reason: 'Skip encryption for CodeBuild project'
+            reason: "Skip encryption for CodeBuild project"
     Properties:
       Artifacts:
         Type: CODEPIPELINE
@@ -383,7 +375,7 @@ Resources:
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: CODEPIPELINE
-        BuildSpec: !Join ['', ['buildspec', '-', !Ref 'Stage', '.yml']]
+        BuildSpec: !Join [ "", [ "buildspec", "-", !Ref 'Stage', ".yml" ] ]
       TimeoutInMinutes: 30
       Cache:
         Type: S3
@@ -417,7 +409,7 @@ Resources:
                 ConnectionArn: !Ref CodeStarConnectionArn
                 FullRepositoryId: !Ref GitRepo
                 BranchName: !Ref GitBranch
-                OutputArtifactFormat: 'CODE_ZIP'
+                OutputArtifactFormat: "CODE_ZIP"
               OutputArtifacts: [Name: SourceArtifacts]
               Namespace: SourceVariables
               RunOrder: 1
@@ -615,7 +607,7 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W11
-            reason: 'Resource * required for codepipeline:PutJob*'
+            reason: "Resource * required for codepipeline:PutJob*"
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -654,9 +646,9 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W35
-            reason: 'Access logging handled by CloudFront'
+            reason: "Access logging handled by CloudFront"
           - id: W41
-            reason: 'Skip encryption for website bucket'
+            reason: "Skip encryption for website bucket"
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
@@ -672,7 +664,7 @@ Resources:
         - Id: EntireBucket
       Tags:
         - Key: description
-          Value: !Sub 'Frontend for ${AWS::StackName}'
+          Value: !Sub "Frontend for ${AWS::StackName}"
 
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -704,15 +696,15 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W70
-            reason: 'Cloudfront _does_ use minimum protocol version TLS 1.2'
+            reason: "Cloudfront _does_ use minimum protocol version TLS 1.2"
     Properties:
       DistributionConfig:
         Comment: CDN for static website stored in S3
         Aliases:
           - !Sub '${SubDomainNameWithDot}${HostedZoneName}'
         DefaultCacheBehavior:
-          AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
-          CachedMethods: ['GET', 'HEAD', 'OPTIONS']
+          AllowedMethods: ["GET", "HEAD", "OPTIONS"]
+          CachedMethods: ["GET", "HEAD", "OPTIONS"]
           Compress: true
           DefaultTTL: 0
           ForwardedValues:
@@ -768,11 +760,11 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W35
-            reason: 'Skip access log for this bucket'
+            reason: "Skip access log for this bucket"
           - id: W41
-            reason: 'Skip encryption for access log bucket'
+            reason: "Skip encryption for access log bucket"
           - id: W51
-            reason: 'Use default bucket policy'
+            reason: "Use default bucket policy"
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
@@ -786,7 +778,7 @@ Resources:
         Status: Enabled
       Tags:
         - Key: description
-          Value: !Sub 'CloudFront AccessLogs for ${AWS::StackName}'
+          Value: !Sub "CloudFront AccessLogs for ${AWS::StackName}"
 
   CloudFrontTotalErrorRateAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -794,10 +786,10 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W28
-            reason: 'Allow explicit name'
+            reason: "Allow explicit name"
     Properties:
-      AlarmName: !Sub 'CloudFront-Errors-${AWS::StackName}'
-      AlarmDescription: 'CDN error monitor'
+      AlarmName: !Sub "CloudFront-Errors-${AWS::StackName}"
+      AlarmDescription: "CDN error monitor"
       MetricName: TotalErrorRate
       Namespace: AWS/CloudFront
       Dimensions:
@@ -817,10 +809,10 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W28
-            reason: 'Allow explicit name'
+            reason: "Allow explicit name"
     Properties:
-      AlarmName: !Sub 'CloudFront-Cache-Hit-Rate-${AWS::StackName}'
-      AlarmDescription: 'CDN cache monitor'
+      AlarmName: !Sub "CloudFront-Cache-Hit-Rate-${AWS::StackName}"
+      AlarmDescription: "CDN cache monitor"
       MetricName: CacheHitRate
       Namespace: AWS/CloudFront
       Dimensions:

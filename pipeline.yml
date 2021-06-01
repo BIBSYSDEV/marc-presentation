@@ -121,11 +121,11 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W35
-            reason: "Skip access logging for artifacts bucket"
+            reason: 'Skip access logging for artifacts bucket'
           - id: W41
-            reason: "Skip encryption for artifacts bucket"
+            reason: 'Skip encryption for artifacts bucket'
           - id: W51
-            reason: "Skip bucket policy for artifacts bucket"
+            reason: 'Skip bucket policy for artifacts bucket'
     DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
@@ -156,7 +156,7 @@ Resources:
     Condition: IsPipelineApprovalActionCondition
     Properties:
       Subscription: # When adding Subscription, SNS formats the messages before sending
-        - !If [HasApprovalEmailAddress, {Endpoint: !Ref PipelineApprovalEmail, Protocol: email}, !Ref 'AWS::NoValue']
+        - !If [HasApprovalEmailAddress, { Endpoint: !Ref PipelineApprovalEmail, Protocol: email }, !Ref 'AWS::NoValue']
 
   PipelineRole:
     Type: 'AWS::IAM::Role'
@@ -171,12 +171,12 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - 'codepipeline.amazonaws.com'
-          Action:
-          - 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'codepipeline.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
       Policies:
         - PolicyName: CodePipelineAccess
           PolicyDocument:
@@ -196,7 +196,11 @@ Resources:
                   - s3:GetBucketVersioning
                 Resource:
                   - !Sub ${ArtifactsBucket.Arn}
-                  - !If [IsCreateNewBucketCondition, !GetAtt WebsiteBucket.Arn, !Sub 'arn:aws:s3:::${ExistingBucketName}']
+                  - !If [
+                      IsCreateNewBucketCondition,
+                      !GetAtt WebsiteBucket.Arn,
+                      !Sub 'arn:aws:s3:::${ExistingBucketName}',
+                    ]
               - Effect: Allow
                 Action:
                   - s3:PutObject
@@ -209,7 +213,11 @@ Resources:
                   - s3:GetObjectVersion
                 Resource:
                   - !Sub '${ArtifactsBucket.Arn}/*'
-                  - !If [IsCreateNewBucketCondition, !Sub '${WebsiteBucket.Arn}/*', !Sub 'arn:aws:s3:::${ExistingBucketName}/*']
+                  - !If [
+                      IsCreateNewBucketCondition,
+                      !Sub '${WebsiteBucket.Arn}/*',
+                      !Sub 'arn:aws:s3:::${ExistingBucketName}/*',
+                    ]
               - Effect: Allow
                 Action:
                   - cloudformation:DescribeStacks
@@ -233,9 +241,9 @@ Resources:
                   - !GetAtt CodeBuildProject.Arn
               - !If
                 - IsPipelineApprovalActionCondition
-                - Effect: "Allow"
+                - Effect: 'Allow'
                   Action:
-                    - "sns:Publish"
+                    - 'sns:Publish'
                   Resource: !Ref PipelineApprovalTopic
                 - !Ref AWS::NoValue
               - Action:
@@ -266,12 +274,12 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - 'cloudformation.amazonaws.com'
-          Action:
-          - 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'cloudformation.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
       Policies:
         - PolicyName: CloudFormationAccess
           PolicyDocument:
@@ -321,37 +329,37 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - 'codebuild.amazonaws.com'
-          Action:
-          - 'sts:AssumeRole'
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'codebuild.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
       Policies:
-      - PolicyName: ServiceRole
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Sid: CloudWatchLogsPolicy
-            Effect: Allow
-            Action:
-            - logs:CreateLogGroup
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-            Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*'
-          - Sid: S3GetPutObjects
-            Effect: Allow
-            Action:
-            - s3:GetObject
-            - s3:GetObjectVersion
-            - s3:PutObject
-#            - s3:PutObjectAcl
-            - s3:CreateMultipartUpload
-            - s3:ListMultipartUploadParts
-            - s3:AbortMultipartUpload
-            Resource: !Sub
-            - 'arn:aws:s3:::${BucketName}/*'
-            - BucketName: !Ref ArtifactsBucket
+        - PolicyName: ServiceRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: CloudWatchLogsPolicy
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*'
+              - Sid: S3GetPutObjects
+                Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:PutObject
+                  #            - s3:PutObjectAcl
+                  - s3:CreateMultipartUpload
+                  - s3:ListMultipartUploadParts
+                  - s3:AbortMultipartUpload
+                Resource: !Sub
+                  - 'arn:aws:s3:::${BucketName}/*'
+                  - BucketName: !Ref ArtifactsBucket
 
   CodeBuildProject:
     DependsOn: CloudFormationRole # make sure that CloudFormationRole is deleted last
@@ -360,7 +368,7 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W32
-            reason: "Skip encryption for CodeBuild project"
+            reason: 'Skip encryption for CodeBuild project'
     Properties:
       Artifacts:
         Type: CODEPIPELINE
@@ -375,7 +383,7 @@ Resources:
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: CODEPIPELINE
-        BuildSpec: !Join [ "", [ "buildspec", "-", !Ref 'Stage', ".yml" ] ]
+        BuildSpec: !Join ['', ['buildspec', '-', !Ref 'Stage', '.yml']]
       TimeoutInMinutes: 30
       Cache:
         Type: S3
@@ -387,9 +395,9 @@ Resources:
       Name: !Sub '${AWS::StackName}-Pipeline'
       RoleArn: !GetAtt PipelineRole.Arn
       RestartExecutionOnUpdate: true
-#      DisableInboundStageTransitions:
-#        - Reason: Approve Step
-#          StageName: Release
+      #      DisableInboundStageTransitions:
+      #        - Reason: Approve Step
+      #          StageName: Release
       ArtifactStore:
         Type: S3
         Location: !Ref ArtifactsBucket
@@ -397,107 +405,107 @@ Resources:
         - Key: 'automation:approval-timeout'
           Value: '1'
       Stages:
-      - Name: Source
-        Actions:
         - Name: Source
-          ActionTypeId:
-            Category: Source
-            Owner: AWS
-            Version: '1'
-            Provider: CodeStarSourceConnection
-          Configuration:
-            ConnectionArn: !Ref CodeStarConnectionArn
-            FullRepositoryId: !Ref GitRepo
-            BranchName: !Ref GitBranch
-            OutputArtifactFormat: "CODE_ZIP"
-          OutputArtifacts: [Name: SourceArtifacts]
-          Namespace: SourceVariables
-          RunOrder: 1
-      - Name: Build
-        Actions:
-        - Name: TestAndBuildApp
-          ActionTypeId:
-            Category: Build
-            Owner: AWS
-            Provider: CodeBuild
-            Version: '1'
-          Configuration:
-            ProjectName: !Ref CodeBuildProject
-          InputArtifacts:
-          - Name: SourceArtifacts
-          OutputArtifacts:
-          - Name: BuildArtifacts
-          RunOrder: 1
-      - Name: UpdatePipeline
-        Actions:
-        - Name: DeployPipeline
-          ActionTypeId:
-            Category: Deploy
-            Owner: AWS
-            Provider: CloudFormation
-            Version: '1'
-          Configuration:
-            ActionMode: REPLACE_ON_FAILURE
-            RoleArn: !GetAtt 'CloudFormationRole.Arn'
-            StackName: !Ref 'AWS::StackName'
-            Capabilities: CAPABILITY_IAM
-            TemplatePath: 'SourceArtifacts::pipeline.yml'
-            ParameterOverrides: !Sub |
-              {
-                "CodeStarConnectionArn": "/github-connection",
-                "GitRepo": "${GitRepo}",
-                "GitBranch": "${GitBranch}",
-                "PipelineApprovalAction": "${PipelineApprovalAction}",
-                "PipelineApprovalEmail": "${PipelineApprovalEmail}",
-                "AlertTopicArn": "/alert/topicArn",
-                "HostedZoneId": "/hostedzone/id",
-                "HostedZoneName": "/hostedzone/name",
-                "SubDomainNameWithDot": "${SubDomainNameWithDot}",
-                "DomainCertificateArn": "/marcpresentation/cloudFrontCertificateArn",
-                "ExistingBucketName": "${ExistingBucketName}"
-              }
-          InputArtifacts:
-          - Name: SourceArtifacts
-          RunOrder: 1
-      - Name: Release
-        Actions:
-        - !If
-          - IsPipelineApprovalActionCondition
-          - Name: ApprovalForRelease
-            ActionTypeId:
-              Category: Approval
-              Owner: AWS
-              Version: '1'
-              Provider: Manual
-            Configuration:
-              NotificationArn: !Ref PipelineApprovalTopic
-              CustomData: !Sub 'A new release is ready for the ${AWS::StackName} stack in account ${AWS::AccountId}. Commit message: "#{SourceVariables.CommitMessage}". Do you want to deploy the changes?'
-              ExternalEntityLink: 'https://aws.unit.no'
-            RunOrder: 1
-          - !Ref AWS::NoValue
-        - Name: CopyApplicationtoS3
-          ActionTypeId:
-            Category: Deploy
-            Owner: AWS
-            Provider: S3
-            Version: '1'
-          InputArtifacts:
-            - Name: BuildArtifacts
-          Configuration:
-            BucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
-#            ObjectKey: '{datetime}/' # TODO
-            Extract: true
-          RunOrder: 2
-        - Name: InvalidateDistribution
-          ActionTypeId:
-            Category: Invoke
-            Owner: AWS
-            Provider: Lambda
-            Version: '1'
-          Configuration:
-            FunctionName: !Ref InvalidateCloudfrontDistribution
-            UserParameters: !Sub '{"distribution_id": "${CloudFrontDistribution}"}'
-          RunOrder: 3
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Owner: AWS
+                Version: '1'
+                Provider: CodeStarSourceConnection
+              Configuration:
+                ConnectionArn: !Ref CodeStarConnectionArn
+                FullRepositoryId: !Ref GitRepo
+                BranchName: !Ref GitBranch
+                OutputArtifactFormat: 'CODE_ZIP'
+              OutputArtifacts: [Name: SourceArtifacts]
+              Namespace: SourceVariables
+              RunOrder: 1
+        - Name: Build
+          Actions:
+            - Name: TestAndBuildApp
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: '1'
+              Configuration:
+                ProjectName: !Ref CodeBuildProject
+              InputArtifacts:
+                - Name: SourceArtifacts
+              OutputArtifacts:
+                - Name: BuildArtifacts
+              RunOrder: 1
+        - Name: UpdatePipeline
+          Actions:
+            - Name: DeployPipeline
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: CloudFormation
+                Version: '1'
+              Configuration:
+                ActionMode: REPLACE_ON_FAILURE
+                RoleArn: !GetAtt 'CloudFormationRole.Arn'
+                StackName: !Ref 'AWS::StackName'
+                Capabilities: CAPABILITY_IAM
+                TemplatePath: 'SourceArtifacts::pipeline.yml'
+                ParameterOverrides: !Sub |
+                  {
+                    "CodeStarConnectionArn": "/github-connection",
+                    "GitRepo": "${GitRepo}",
+                    "GitBranch": "${GitBranch}",
+                    "PipelineApprovalAction": "${PipelineApprovalAction}",
+                    "PipelineApprovalEmail": "${PipelineApprovalEmail}",
+                    "AlertTopicArn": "/alert/topicArn",
+                    "HostedZoneId": "/hostedzone/id",
+                    "HostedZoneName": "/hostedzone/name",
+                    "SubDomainNameWithDot": "${SubDomainNameWithDot}",
+                    "DomainCertificateArn": "/marcpresentation/cloudFrontCertificateArn",
+                    "ExistingBucketName": "${ExistingBucketName}"
+                  }
+              InputArtifacts:
+                - Name: SourceArtifacts
+              RunOrder: 1
+        - Name: Release
+          Actions:
+            - !If
+              - IsPipelineApprovalActionCondition
+              - Name: ApprovalForRelease
+                ActionTypeId:
+                  Category: Approval
+                  Owner: AWS
+                  Version: '1'
+                  Provider: Manual
+                Configuration:
+                  NotificationArn: !Ref PipelineApprovalTopic
+                  CustomData: !Sub 'A new release is ready for the ${AWS::StackName} stack in account ${AWS::AccountId}. Commit message: "#{SourceVariables.CommitMessage}". Do you want to deploy the changes?'
+                  ExternalEntityLink: 'https://aws.unit.no'
+                RunOrder: 1
+              - !Ref AWS::NoValue
+            - Name: CopyApplicationtoS3
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Provider: S3
+                Version: '1'
+              InputArtifacts:
+                - Name: BuildArtifacts
+              Configuration:
+                BucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+                #            ObjectKey: '{datetime}/' # TODO
+                Extract: true
+              RunOrder: 2
+            - Name: InvalidateDistribution
+              ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Provider: Lambda
+                Version: '1'
+              Configuration:
+                FunctionName: !Ref InvalidateCloudfrontDistribution
+                UserParameters: !Sub '{"distribution_id": "${CloudFrontDistribution}"}'
+              RunOrder: 3
 
   PipelineFailedNotification:
     Type: 'AWS::Events::Rule'
@@ -515,11 +523,18 @@ Resources:
             - FAILED
       State: ENABLED
       Targets:
-      - Arn: !Ref AlertTopicArn
-        Id: rule
+        - Arn: !Ref AlertTopicArn
+          Id: rule
 
   InvalidateCloudfrontDistribution:
     Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W89
+            reason: 'The Lambda does not need to be run inside a VPC, as it does not need access to other resources within a VPC'
+          - id: W92
+            reason: 'The Lambda does not need to reserve concurrency as it as rarely used and not related to processing of time-critical user requests'
     Properties:
       Code:
         ZipFile: |
@@ -600,7 +615,7 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W11
-            reason: "Resource * required for codepipeline:PutJob*"
+            reason: 'Resource * required for codepipeline:PutJob*'
     Properties:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -639,9 +654,9 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W35
-            reason: "Access logging handled by CloudFront"
+            reason: 'Access logging handled by CloudFront'
           - id: W41
-            reason: "Skip encryption for website bucket"
+            reason: 'Skip encryption for website bucket'
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
@@ -657,7 +672,7 @@ Resources:
         - Id: EntireBucket
       Tags:
         - Key: description
-          Value: !Sub "Frontend for ${AWS::StackName}"
+          Value: !Sub 'Frontend for ${AWS::StackName}'
 
   WebsiteBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -689,15 +704,15 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W70
-            reason: "Cloudfront _does_ use minimum protocol version TLS 1.2"
+            reason: 'Cloudfront _does_ use minimum protocol version TLS 1.2'
     Properties:
       DistributionConfig:
         Comment: CDN for static website stored in S3
         Aliases:
           - !Sub '${SubDomainNameWithDot}${HostedZoneName}'
         DefaultCacheBehavior:
-          AllowedMethods: ["GET", "HEAD", "OPTIONS"]
-          CachedMethods: ["GET", "HEAD", "OPTIONS"]
+          AllowedMethods: ['GET', 'HEAD', 'OPTIONS']
+          CachedMethods: ['GET', 'HEAD', 'OPTIONS']
           Compress: true
           DefaultTTL: 0
           ForwardedValues:
@@ -738,8 +753,8 @@ Resources:
         Enabled: true
         Origins:
           - DomainName: !Sub
-            - '${WebsiteBucketName}.s3.${AWS::Region}.amazonaws.com'
-            - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
+              - '${WebsiteBucketName}.s3.${AWS::Region}.amazonaws.com'
+              - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
             Id: !Sub
               - 'S3-${WebsiteBucketName}'
               - WebsiteBucketName: !If [IsCreateNewBucketCondition, !Ref WebsiteBucket, !Ref ExistingBucketName]
@@ -753,11 +768,11 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W35
-            reason: "Skip access log for this bucket"
+            reason: 'Skip access log for this bucket'
           - id: W41
-            reason: "Skip encryption for access log bucket"
+            reason: 'Skip encryption for access log bucket'
           - id: W51
-            reason: "Use default bucket policy"
+            reason: 'Use default bucket policy'
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
@@ -771,7 +786,7 @@ Resources:
         Status: Enabled
       Tags:
         - Key: description
-          Value: !Sub "CloudFront AccessLogs for ${AWS::StackName}"
+          Value: !Sub 'CloudFront AccessLogs for ${AWS::StackName}'
 
   CloudFrontTotalErrorRateAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -779,10 +794,10 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W28
-            reason: "Allow explicit name"
+            reason: 'Allow explicit name'
     Properties:
-      AlarmName: !Sub "CloudFront-Errors-${AWS::StackName}"
-      AlarmDescription: "CDN error monitor"
+      AlarmName: !Sub 'CloudFront-Errors-${AWS::StackName}'
+      AlarmDescription: 'CDN error monitor'
       MetricName: TotalErrorRate
       Namespace: AWS/CloudFront
       Dimensions:
@@ -802,10 +817,10 @@ Resources:
       cfn_nag:
         rules_to_suppress:
           - id: W28
-            reason: "Allow explicit name"
+            reason: 'Allow explicit name'
     Properties:
-      AlarmName: !Sub "CloudFront-Cache-Hit-Rate-${AWS::StackName}"
-      AlarmDescription: "CDN cache monitor"
+      AlarmName: !Sub 'CloudFront-Cache-Hit-Rate-${AWS::StackName}'
+      AlarmDescription: 'CDN cache monitor'
       MetricName: CacheHitRate
       Namespace: AWS/CloudFront
       Dimensions:

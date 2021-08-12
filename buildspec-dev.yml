@@ -37,7 +37,7 @@ phases:
       - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec)((..*\.y[a]?ml)|(..*\.template))$'
 
       - npm install
-      - npm audit || true # Just log audit info
+      #- npm audit || true # Just log audit info
   #      - npm audit fix
   build:
     commands:

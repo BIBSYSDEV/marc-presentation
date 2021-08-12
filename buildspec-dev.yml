@@ -44,7 +44,7 @@ phases:
       - echo Build started on `date`
       - echo Building Node app...
       - npm run build:development
-      - npm test
+      - CI=true npm test
 
   post_build:
     commands:

@@ -15,6 +15,9 @@ phases:
 
       # Install cfn_nag
       - gem install cfn-nag
+      - node -v
+      - npm -v
+      - npm i -g npm
 
   pre_build:
     commands:

@@ -15,6 +15,9 @@ phases:
 
       # Install cfn_nag
       - gem install cfn-nag
+      - node -v
+      - npm -v
+      - npm i -g npm
 
   pre_build:
     commands:
@@ -37,13 +40,14 @@ phases:
       - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec)((..*\.y[a]?ml)|(..*\.template))$'
 
       - npm install
-      - npm audit || true # Just log audit info
+      #- npm audit || true # Just log audit info
   #      - npm audit fix
   build:
     commands:
       - echo Build started on `date`
       - echo Building Node app...
       - npm run build
+      - CI=true npm test
 
   post_build:
     commands:

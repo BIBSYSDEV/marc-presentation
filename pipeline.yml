@@ -46,12 +46,6 @@ Metadata:
         default: Sub domain name with trailing .
 
 Parameters:
-  Stage:
-    Type: String
-    AllowedValues:
-      - 'dev'
-      - 'prod'
-    Description: environment/stageing variables
   CodeStarConnectionArn:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/github-connection'
@@ -352,7 +346,6 @@ Resources:
                   - s3:GetObject
                   - s3:GetObjectVersion
                   - s3:PutObject
-                  #            - s3:PutObjectAcl
                   - s3:CreateMultipartUpload
                   - s3:ListMultipartUploadParts
                   - s3:AbortMultipartUpload
@@ -378,11 +371,14 @@ Resources:
         EnvironmentVariables:
           - Name: S3_BUCKET
             Value: !Ref ArtifactsBucket
+          - Name: REACT_APP_ALMA_API_URL
+            Value: 'https://{{resolve:ssm:/api/domainName:1}}/alma'
+          - Name: REACT_APP_AUTHORITY_API_URL
+            Value: 'https://{{resolve:ssm:/api/domainName:1}}/authority'
       Name: !Sub '${AWS::StackName}-build'
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: CODEPIPELINE
-        BuildSpec: !Join ['', ['buildspec', '-', !Ref 'Stage', '.yml']]
       TimeoutInMinutes: 30
       Cache:
         Type: S3

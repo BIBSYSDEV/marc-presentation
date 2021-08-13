@@ -8,9 +8,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:development": "env-cmd -f ./.env.development npm run-script start",
-    "start:production": "env-cmd -f ./.env.production npm run-script start",
-    "build:development": "env-cmd -f ./.env.development npm run-script build",
-    "build:production": "env-cmd -f ./.env.production npm run-script build"
+    "start:production": "env-cmd -f ./.env.production npm run-script start"
   },
   "dependencies": {
     "axios": "^0.21.0",

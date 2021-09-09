@@ -10,8 +10,8 @@ Metadata:
       - Label:
           default: Git Settings
         Parameters:
-          - GitRepo
-          - GitBranch
+          - GitHubRepo
+          - GitHubBranch
       - Label:
           default: Pipeline approval
         Parameters:
@@ -28,9 +28,9 @@ Metadata:
           - HostedZoneName
           - SubDomainNameWithDot
     ParameterLabels:
-      GitRepo:
+      GitHubRepo:
         default: Git Repo
-      GitBranch:
+      GitHubBranch:
         default: Git Branch
       PipelineApprovalAction:
         default: Approval action
@@ -50,11 +50,20 @@ Parameters:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/github-connection'
     Description: The ARN for the CodestarConnection that connects to the Git (BitBucket) repo
-  GitRepo:
+  GitHubOAuthToken:
+    Description: OAuth token used by AWS CodePipeline to connect to GitHub
+    NoEcho: true
     Type: String
-    Default: BIBSYSDEV/marc-presentation
+    Default: '{{resolve:secretsmanager:githubtoken:SecretString}}'
+  GitHubOwner:
+    Description: GitHub username owning the repo
+    Type: String
+    Default: BIBSYSDEV
+  GitHubRepo:
+    Type: String
+    Default: marc-presentation
     Description: Git repository name
-  GitBranch:
+  GitHubBranch:
     Type: String
     Default: develop
     Description: Git repository branch
@@ -190,10 +199,10 @@ Resources:
                 Resource:
                   - !Sub ${ArtifactsBucket.Arn}
                   - !If [
-                      IsCreateNewBucketCondition,
-                      !GetAtt WebsiteBucket.Arn,
-                      !Sub 'arn:aws:s3:::${ExistingBucketName}',
-                    ]
+                    IsCreateNewBucketCondition,
+                    !GetAtt WebsiteBucket.Arn,
+                    !Sub 'arn:aws:s3:::${ExistingBucketName}',
+                  ]
               - Effect: Allow
                 Action:
                   - s3:PutObject
@@ -207,10 +216,10 @@ Resources:
                 Resource:
                   - !Sub '${ArtifactsBucket.Arn}/*'
                   - !If [
-                      IsCreateNewBucketCondition,
-                      !Sub '${WebsiteBucket.Arn}/*',
-                      !Sub 'arn:aws:s3:::${ExistingBucketName}/*',
-                    ]
+                    IsCreateNewBucketCondition,
+                    !Sub '${WebsiteBucket.Arn}/*',
+                    !Sub 'arn:aws:s3:::${ExistingBucketName}/*',
+                  ]
               - Effect: Allow
                 Action:
                   - cloudformation:DescribeStacks
@@ -363,7 +372,7 @@ Resources:
             reason: 'Skip encryption for CodeBuild project'
     Properties:
       Artifacts:
-        Type: CODEPIPELINE
+        Type: NO_ARTIFACTS
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:5.0
@@ -378,7 +387,10 @@ Resources:
       Name: !Sub '${AWS::StackName}-build'
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
-        Type: CODEPIPELINE
+        Type: GITHUB
+        Location: https://github.com/BIBSYSDEV/marc-presentation.git
+      Triggers:
+        Webhook: true
       TimeoutInMinutes: 30
       Cache:
         Type: S3
@@ -405,14 +417,15 @@ Resources:
             - Name: Source
               ActionTypeId:
                 Category: Source
-                Owner: AWS
+                Owner: ThirdParty
                 Version: '1'
-                Provider: CodeStarSourceConnection
+                Provider: GitHub
               Configuration:
-                ConnectionArn: !Ref CodeStarConnectionArn
-                FullRepositoryId: !Ref GitRepo
-                BranchName: !Ref GitBranch
-                OutputArtifactFormat: 'CODE_ZIP'
+                Owner: !Ref GitHubOwner
+                OAuthToken: !Ref GitHubOAuthToken
+                Repo: !Ref GitHubRepo
+                Branch: !Ref GitHubBranch
+                PollForSourceChanges: false
               OutputArtifacts: [Name: SourceArtifacts]
               Namespace: SourceVariables
               RunOrder: 1
@@ -448,8 +461,8 @@ Resources:
                 ParameterOverrides: !Sub |
                   {
                     "CodeStarConnectionArn": "/github-connection",
-                    "GitRepo": "${GitRepo}",
-                    "GitBranch": "${GitBranch}",
+                    "GitHubRepo": "${GitHubRepo}",
+                    "GitHubBranch": "${GitHubBranch}",
                     "PipelineApprovalAction": "${PipelineApprovalAction}",
                     "PipelineApprovalEmail": "${PipelineApprovalEmail}",
                     "AlertTopicArn": "/alert/topicArn",

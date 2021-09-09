@@ -61,7 +61,7 @@ Parameters:
     Default: BIBSYSDEV
   GitHubRepo:
     Type: String
-    Default: InterLibraryLoan-react-frontend
+    Default: marc-presentation
     Description: Git repository name
   GitHubBranch:
     Type: String
@@ -388,7 +388,7 @@ Resources:
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Source:
         Type: GITHUB
-        Location: https://github.com/BIBSYSDEV/InterLibraryLoan-react-frontend.git
+        Location: https://github.com/BIBSYSDEV/marc-presentation.git
       Triggers:
         Webhook: true
       TimeoutInMinutes: 30

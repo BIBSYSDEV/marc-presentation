@@ -1,10 +1,6 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { FC } from 'react';
 import { Author, MarcData } from '../types';
 import styled from 'styled-components';
-
-interface MetadataProps {
-  marcData?: MarcData;
-}
 
 const TitleLabel = styled.h1`
   color: rgb(0, 0, 0, 1);
@@ -42,37 +38,7 @@ const YearLabel = styled.h2`
   display: inline;
 `;
 
-const Metadata: FC<MetadataProps> = ({ marcData }) => {
-  const [marcDataReady, setMarcDataReady] = useState(false);
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [year, setYear] = useState('');
-
-  useEffect(() => {
-    if (marcData) {
-      setTitle(extractTitle(marcData));
-      setAuthor(extractAuthors(marcData.authors));
-      if (marcData.year && marcData.year !== '') setYear(marcData.year);
-      setMarcDataReady(true);
-    }
-  }, [marcData]);
-
-  return (
-    <div>
-      {marcDataReady ? (
-        <>
-          {title && <TitleLabel aria-label="Title">{title}</TitleLabel>}
-          {author && <AuthorLabel aria-label="Author">{author}</AuthorLabel>}
-          {year && <YearLabel aria-label="Year">{year}</YearLabel>}
-        </>
-      ) : (
-        <h1>Laster data ...</h1>
-      )}
-    </div>
-  );
-};
-
-function extractAuthors(authors: Author[]) {
+const extractAuthors = (authors: Author[]) => {
   let authorsString = '';
   if (authors && authors.length > 0) {
     authors.forEach((author) => {
@@ -82,9 +48,9 @@ function extractAuthors(authors: Author[]) {
     });
   }
   return authorsString;
-}
+};
 
-function extractTitle(marcData: MarcData) {
+const extractTitle = (marcData: MarcData) => {
   const mainTitle = marcData.mainTitle ? marcData.mainTitle.trim() : '';
   const parallelTitle = marcData.parallelTitle ? marcData.parallelTitle.trim() : '';
   const numberOfPartTitle = marcData.numberOfPartTitle ? marcData.numberOfPartTitle.trim() : '';
@@ -103,6 +69,24 @@ function extractTitle(marcData: MarcData) {
   if (statementOfResponsibility !== '') titleFromFields += ` / ${statementOfResponsibility}`;
 
   return titleFromFields.trim();
+};
+
+interface MetadataProps {
+  marcData: MarcData;
 }
+
+const Metadata: FC<MetadataProps> = ({ marcData }) => {
+  const title = extractTitle(marcData);
+  const author = extractAuthors(marcData.authors);
+  const year = marcData.year !== '' && marcData.year;
+
+  return (
+    <div>
+      {title && <TitleLabel aria-label="Title">{title}</TitleLabel>}
+      {author && <AuthorLabel aria-label="Author">{author}</AuthorLabel>}
+      {year && <YearLabel aria-label="Year">{year}</YearLabel>}
+    </div>
+  );
+};
 
 export default Metadata;

@@ -6,9 +6,10 @@ const Bar = styled.div`
   height: 5rem;
   width: 100%;
   margin-bottom: 1rem;
-  box-shadow: 0px 5px 5px grey;
+  box-shadow: 0 5px 5px grey;
   background-color: white;
 `;
+
 const Title = styled.h1`
   color: rgb(40, 75, 99);
   position: absolute;
@@ -17,7 +18,7 @@ const Title = styled.h1`
   font-weight: 400;
   line-height: 5rem;
   margin-left: 1rem;
-  margin-top: 0rem;
+  margin-top: 0;
 `;
 
 const Divider = styled.span`
@@ -41,10 +42,9 @@ const Header: FC = () => {
   return (
     <Bar>
       <Title>
-        MARC-visning <Divider></Divider>
+        MARC-visning <Divider />
       </Title>
-
-      <LogoImgWrapper src={UnitLogo} alt="Unit logo"></LogoImgWrapper>
+      <LogoImgWrapper src={UnitLogo} alt="Unit logo" />
     </Bar>
   );
 };

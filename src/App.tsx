@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import DataDisplay from './components/DataDisplay';
@@ -8,9 +8,8 @@ import styled from 'styled-components';
 import { MarcData } from './types';
 import DataDownload from './components/DataDownload';
 import Header from './components/Header';
+import { ALMA_API_URL, AUTHORITY_API_URL } from './constants';
 
-const almaSruUrl = process.env.REACT_APP_ALMA_API_URL;
-const authoritySruUrl = process.env.REACT_APP_AUTHORITY_API_URL;
 const queryParams = queryString.parse(window.location.search);
 
 const OuterContainer = styled.div`
@@ -41,48 +40,42 @@ const RadioContainer = styled.div`
   margin-left: 1rem;
 `;
 
-const App: FC = () => {
+const App = () => {
   const [showXMLPressed, setShowXMLPressed] = useState(true);
-  const [marcData, setMarcData] = useState<MarcData | undefined>();
-  const [errorPresent, setErrorPresent] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [marcData, setMarcData] = useState<MarcData>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error>();
 
   useEffect(() => {
-    async function getAndParseXMLData() {
+    const getAndParseXMLData = async () => {
       let sruUrl = '';
       if (queryParams.auth_id) {
-        sruUrl = authoritySruUrl + '?auth_id=' + queryParams.auth_id;
+        sruUrl = AUTHORITY_API_URL + '?auth_id=' + queryParams.auth_id;
       } else if (queryParams.mms_id) {
-        sruUrl = almaSruUrl + '?mms_id=' + queryParams.mms_id;
+        sruUrl = ALMA_API_URL + '?mms_id=' + queryParams.mms_id;
         if (queryParams.institution) {
           sruUrl += '&institution=' + queryParams.institution;
         }
       }
       if (sruUrl === '') {
-        setErrorPresent(true);
-        setErrorMessage(`Resource not found. \nSearch parameters have not been included in the URL.`);
+        setError(new Error(`Resource not found. \nSearch parameters have not been included in the URL.`));
         return;
       }
       try {
-        await axios
-          .get(sruUrl)
-          .then((response) => {
-            return response.data;
-          })
-          .then((marcDataList) => {
-            setMarcData(marcDataList[0]);
-            setErrorPresent(false);
-            if (!marcDataList[0]) {
-              setErrorPresent(true);
-              setErrorMessage('Failed to retrieve the resource. \nCheck that the input parameter(URL) is correct.');
-            }
-          });
-      } catch (e) {
-        setErrorPresent(true);
-        setErrorMessage('Failed to retrieve the resource, please try again.');
+        setIsLoading(true);
+        const marcDataList = (await axios.get(sruUrl)).data;
+        setMarcData(marcDataList[0]);
+        setError(undefined);
+        if (!marcDataList[0]) {
+          setError(new Error('Failed to retrieve the resource. \nCheck that the input parameter(URL) is correct.'));
+        }
+      } catch (error: any) {
+        setError(new Error(`Failed to retrieve the resource, please try again. \n (${error.message})`));
+      } finally {
+        setIsLoading(false);
       }
-    }
-    getAndParseXMLData();
+    };
+    getAndParseXMLData().then();
   }, []);
 
   const showXML = () => {
@@ -96,28 +89,36 @@ const App: FC = () => {
   return (
     <OuterContainer>
       <Header />
-      {errorPresent ? <ErrorTextField>{errorMessage}</ErrorTextField> : <Metadata marcData={marcData} />}
-      {!errorPresent && marcData && (
-        <RadioContainer>
-          Velg format:
-          <input aria-labelledby="xml" type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
-          <RadioLabel id="xml" onClick={showXML}>
-            XML
-          </RadioLabel>
-          <input
-            aria-labelledby="linjeformat"
-            type="radio"
-            value="linjeFormat"
-            checked={!showXMLPressed}
-            onChange={showLineFormat}
-          />
-          <RadioLabel id="linjeformat" onClick={showLineFormat}>
-            Linjeformat
-          </RadioLabel>
-        </RadioContainer>
+      {isLoading ? (
+        <h1>Laster data ...</h1>
+      ) : error ? (
+        <ErrorTextField>{error.message}</ErrorTextField>
+      ) : (
+        marcData && (
+          <>
+            <Metadata marcData={marcData} />
+            <RadioContainer>
+              Velg format:
+              <input aria-labelledby="xml" type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
+              <RadioLabel id="xml" onClick={showXML}>
+                XML
+              </RadioLabel>
+              <input
+                aria-labelledby="linjeformat"
+                type="radio"
+                value="linjeFormat"
+                checked={!showXMLPressed}
+                onChange={showLineFormat}
+              />
+              <RadioLabel id="linjeformat" onClick={showLineFormat}>
+                Linjeformat
+              </RadioLabel>
+            </RadioContainer>
+            <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
+            <DataDownload marcData={marcData} />
+          </>
+        )
       )}
-      {!errorPresent && marcData && <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />}
-      {!errorPresent && marcData && <DataDownload marcData={marcData} />}
     </OuterContainer>
   );
 };

@@ -64,9 +64,21 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
 
   return (
     <div>
-      {title && <TitleLabel aria-label="Title">{title}</TitleLabel>}
-      {author && <AuthorLabel aria-label="Author">{author}</AuthorLabel>}
-      {year && <YearLabel aria-label="Year">{year}</YearLabel>}
+      {title && (
+        <TitleLabel data-testid="metadata-title" aria-label="Title">
+          {title}
+        </TitleLabel>
+      )}
+      {author && (
+        <AuthorLabel data-testid="metadata-author" aria-label="Author">
+          {author}
+        </AuthorLabel>
+      )}
+      {year && (
+        <YearLabel data-testid="metadata-year" aria-label="Year">
+          {year}
+        </YearLabel>
+      )}
     </div>
   );
 };

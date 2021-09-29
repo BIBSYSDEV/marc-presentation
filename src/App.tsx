@@ -56,11 +56,12 @@ const App = () => {
       }
       try {
         setIsLoading(true);
-        const marcDataList = (await axios.get(sruUrl)).data;
-        setMarcData(marcDataList[0]);
         setError(undefined);
-        if (!marcDataList[0]) {
+        const response = (await axios.get(sruUrl)).data;
+        if (!response[0]) {
           setError(new Error('Failed to retrieve the resource. \nCheck that the input parameter(URL) is correct.'));
+        } else {
+          setMarcData(response[0]);
         }
       } catch (error: any) {
         setError(new Error(`Failed to retrieve the resource, please try again. \n (${error.message})`));
@@ -97,6 +98,7 @@ const App = () => {
                   aria-labelledby="xml"
                   type="radio"
                   value="xml"
+                  data-testid="radio-button-xml-format"
                   checked={showXMLPressed}
                   onChange={showXML}
                 />
@@ -107,6 +109,7 @@ const App = () => {
                   aria-labelledby="linjeformat"
                   type="radio"
                   value="linjeFormat"
+                  data-testid="radio-button-line-format"
                   checked={!showXMLPressed}
                   onChange={showLineFormat}
                 />

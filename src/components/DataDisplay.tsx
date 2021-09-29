@@ -47,7 +47,7 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
 
   return (
     <DataFieldWrapper>
-      <DataField value={showData()} readOnly />
+      <DataField data-testid="marc-preview" value={showData()} readOnly />
     </DataFieldWrapper>
   );
 };

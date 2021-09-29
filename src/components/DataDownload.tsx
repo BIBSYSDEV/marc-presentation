@@ -25,6 +25,9 @@ const StyledButton = styled.button`
   }
 `;
 
+export const filename_XML_format = 'marcpresentation.xml';
+export const filename_line_format = 'marcpresentation.txt';
+
 const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
   const [xmlContent, setXmlContent] = useState('');
   const [lineContent, setLineContent] = useState('');
@@ -45,17 +48,21 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
   }
 
   const downloadXmlContent = () => {
-    createDownload(xmlContent, 'marcpresentation.xml', 'application/xml');
+    createDownload(xmlContent, filename_XML_format, 'application/xml');
   };
 
   const downloadLineContent = () => {
-    createDownload(lineContent, 'marcpresentation.txt', 'text/plain');
+    createDownload(lineContent, filename_line_format, 'text/plain');
   };
 
   return (
     <>
-      <StyledButton onClick={downloadXmlContent}>Last ned XML</StyledButton>
-      <StyledButton onClick={downloadLineContent}>Last ned Linjeformat</StyledButton>
+      <StyledButton data-testid="download-xml-format-button" onClick={downloadXmlContent}>
+        Last ned XML
+      </StyledButton>
+      <StyledButton data-testid="download-line-format-button" onClick={downloadLineContent}>
+        Last ned Linjeformat
+      </StyledButton>
     </>
   );
 };

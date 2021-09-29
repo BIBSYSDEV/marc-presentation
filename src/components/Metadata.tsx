@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 const TitleLabel = styled.h1`
   color: rgb(0, 0, 0, 1);
-  font-weight: Bold;
   line-height: 3rem;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  margin-right: 1rem;
 `;
 
 const AuthorLabel = styled.span`
@@ -26,7 +26,7 @@ const extractAuthors = (authors: Author[]) => {
     authors.forEach((author) => {
       if (authorsString !== '') authorsString += ', ';
       if (author.name !== '') authorsString += author.name;
-      if (author.date && author.date !== '') authorsString += `(${author.date})`;
+      if (author.date && author.date !== '') authorsString += ` (${author.date})`;
     });
   }
   return authorsString;
@@ -65,7 +65,6 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
   return (
     <div>
       {title && <TitleLabel aria-label="Title">{title}</TitleLabel>}
-
       {author && <AuthorLabel aria-label="Author">{author}</AuthorLabel>}
       {year && <YearLabel aria-label="Year">{year}</YearLabel>}
     </div>

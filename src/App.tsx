@@ -82,42 +82,44 @@ const App = () => {
   return (
     <>
       <Header />
-      {error ? (
-        <ErrorTextField>{error.message}</ErrorTextField>
-      ) : isLoading ? (
-        <h1>Laster data ...</h1>
-      ) : (
-        marcData && (
-          <StyledContentWrapper>
-            <Metadata marcData={marcData} />
-            <RadioContainer>
-              Velg format:
-              <StyledRadioInput
-                aria-labelledby="xml"
-                type="radio"
-                value="xml"
-                checked={showXMLPressed}
-                onChange={showXML}
-              />
-              <RadioLabel id="xml" onClick={showXML}>
-                XML
-              </RadioLabel>
-              <StyledRadioInput
-                aria-labelledby="linjeformat"
-                type="radio"
-                value="linjeFormat"
-                checked={!showXMLPressed}
-                onChange={showLineFormat}
-              />
-              <RadioLabel id="linjeformat" onClick={showLineFormat}>
-                Linjeformat
-              </RadioLabel>
-            </RadioContainer>
-            <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
-            <DataDownload marcData={marcData} />
-          </StyledContentWrapper>
-        )
-      )}
+      <StyledContentWrapper>
+        {error ? (
+          <ErrorTextField>{error.message}</ErrorTextField>
+        ) : isLoading ? (
+          <h1>Laster data ...</h1>
+        ) : (
+          marcData && (
+            <>
+              <Metadata marcData={marcData} />
+              <RadioContainer>
+                Velg format:
+                <StyledRadioInput
+                  aria-labelledby="xml"
+                  type="radio"
+                  value="xml"
+                  checked={showXMLPressed}
+                  onChange={showXML}
+                />
+                <RadioLabel id="xml" onClick={showXML}>
+                  XML
+                </RadioLabel>
+                <StyledRadioInput
+                  aria-labelledby="linjeformat"
+                  type="radio"
+                  value="linjeFormat"
+                  checked={!showXMLPressed}
+                  onChange={showLineFormat}
+                />
+                <RadioLabel id="linjeformat" onClick={showLineFormat}>
+                  Linjeformat
+                </RadioLabel>
+              </RadioContainer>
+              <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
+              <DataDownload marcData={marcData} />
+            </>
+          )
+        )}
+      </StyledContentWrapper>
     </>
   );
 };

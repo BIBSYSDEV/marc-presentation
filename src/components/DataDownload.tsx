@@ -6,21 +6,21 @@ interface DataDownloadProps {
   marcData: MarcData;
 }
 
-const Buttons = styled.button`
+const StyledButton = styled.button`
   && {
     background-color: rgb(40, 75, 99);
     border-radius: 5px;
-    border: 1px solid;
-    border-color: rgb(40, 75, 99);
-    margin-left: 1rem;
-    margin-top: 0.7rem;
-    padding: 0.5rem;
-    font-family: Barlow, sans-serif;
-    font-size: 1.1rem;
+    border: none;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
     color: white;
     cursor: pointer;
+
+    &:hover,
     &:focus {
-      background-color: orange;
+      background-color: rgb(0, 31, 52);
     }
   }
 `;
@@ -54,9 +54,8 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
 
   return (
     <>
-      <Buttons onClick={downloadXmlContent}>Last ned XML</Buttons>
-      {'  '}
-      <Buttons onClick={downloadLineContent}>Last ned Linjeformat</Buttons>
+      <StyledButton onClick={downloadXmlContent}>Last ned XML</StyledButton>
+      <StyledButton onClick={downloadLineContent}>Last ned Linjeformat</StyledButton>
     </>
   );
 };

@@ -23,9 +23,24 @@ const mockAlmaResponse = [
   },
 ];
 
-const mockAuthorityResponse = {
-  //todo
-};
+const mockAuthorityResponse = [
+  {
+    id: '5068070',
+    authors: [
+      {
+        name: 'Skagen, Stian',
+        date: '1981-',
+      },
+    ],
+    xmlPresentation:
+      '\u003crecord xmlns:marc\u003d"info:lc/xmlns/marcxchange-v1" format\u003d"MARC21" id\u003d"5068070" type\u003d"Authority"\u003e\n    \u003cleader\u003e99999nz  a2299999n  4500\u003c/leader\u003e\n    \u003ccontrolfield tag\u003d"001"\u003e5068070\u003c/controlfield\u003e\n    \u003ccontrolfield tag\u003d"003"\u003eNO-TrBIB\u003c/controlfield\u003e\n    \u003ccontrolfield tag\u003d"005"\u003e20181018111603.0\u003c/controlfield\u003e\n    \u003ccontrolfield tag\u003d"008"\u003e050829n| adz|naabn|         |a|ana|     \u003c/controlfield\u003e\n    \u003cdatafield ind1\u003d"7" ind2\u003d" " tag\u003d"024"\u003e\n        \u003csubfield code\u003d"a"\u003ex05068070\u003c/subfield\u003e\n        \u003csubfield code\u003d"2"\u003eNO-TrBIB\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d"7" ind2\u003d" " tag\u003d"024"\u003e\n        \u003csubfield code\u003d"a"\u003ehttp://hdl.handle.net/11250/625790\u003c/subfield\u003e\n        \u003csubfield code\u003d"2"\u003ehdl\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d"7" ind2\u003d" " tag\u003d"024"\u003e\n        \u003csubfield code\u003d"a"\u003e0000000367411384\u003c/subfield\u003e\n        \u003csubfield code\u003d"2"\u003eisni\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d"7" ind2\u003d" " tag\u003d"024"\u003e\n        \u003csubfield code\u003d"a"\u003ehttp://viaf.org/viaf/231431151\u003c/subfield\u003e\n        \u003csubfield code\u003d"2"\u003eviaf\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d" " ind2\u003d" " tag\u003d"040"\u003e\n        \u003csubfield code\u003d"a"\u003eNO-TrBIB\u003c/subfield\u003e\n        \u003csubfield code\u003d"b"\u003enob\u003c/subfield\u003e\n        \u003csubfield code\u003d"c"\u003eNO-TrBIB\u003c/subfield\u003e\n        \u003csubfield code\u003d"f"\u003enoraf\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d" " ind2\u003d" " tag\u003d"043"\u003e\n        \u003csubfield code\u003d"c"\u003eno\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d"1" ind2\u003d" " tag\u003d"100"\u003e\n        \u003csubfield code\u003d"a"\u003eSkagen, Stian\u003c/subfield\u003e\n        \u003csubfield code\u003d"d"\u003e1980-\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d" " ind2\u003d" " tag\u003d"375"\u003e\n        \u003csubfield code\u003d"a"\u003em\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d"3" ind2\u003d" " tag\u003d"400"\u003e\n        \u003csubfield code\u003d"a"\u003e[Concept.Virus]\u003c/subfield\u003e\n    \u003c/datafield\u003e\n    \u003cdatafield ind1\u003d" " ind2\u003d" " tag\u003d"901"\u003e\n        \u003csubfield code\u003d"a"\u003ekat3\u003c/subfield\u003e\n    \u003c/datafield\u003e\n\u003c/record\u003e\n',
+    linePresentation:
+      '*ldr 99999nz  a2299999n  4500\n*001 5068070\n*003 NO-TrBIB\n*005 20181018111603.0\n*008 050829n| adz|naabn|         |a|ana|     \n*0247# $ax05068070 $2NO-TrBIB\n*0247# $ahttp://hdl.handle.net/11250/625790 $2hdl\n*0247# $a0000000367411384 $2isni\n*0247# $ahttp://viaf.org/viaf/231431151 $2viaf\n*040## $aNO-TrBIB $bnob $cNO-TrBIB $fnoraf\n*043## $cno\n*1001# $aSkagen, Stian $d1980-\n*375## $am\n*4003# $a[Concept.Virus]\n*901## $akat3',
+  },
+];
+
+const mockMmsIdThatTriggersServerError = '123';
+const mockAuthIdThatTriggersServerError = '234';
 
 export const interceptRequestsOnMock = () => {
   const mock = new MockAdapter(Axios);
@@ -48,7 +63,9 @@ export const interceptRequestsOnMock = () => {
   //   return [statusCode, mockedResult];
   // };
 
+  mock.onGet(new RegExp(`${ALMA_API_URL}\\?mms_id=${mockMmsIdThatTriggersServerError}`)).reply(500, null);
   mock.onGet(new RegExp(`${ALMA_API_URL}.*`)).reply(200, mockAlmaResponse);
+  mock.onGet(new RegExp(`${AUTHORITY_API_URL}\\?auth_id=${mockAuthIdThatTriggersServerError}`)).reply(500, null);
   mock.onGet(new RegExp(`${AUTHORITY_API_URL}.*`)).reply(200, mockAuthorityResponse);
 
   // ALL OTHER

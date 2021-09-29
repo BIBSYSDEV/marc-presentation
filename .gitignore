@@ -3,9 +3,6 @@
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
 # production
 /build
 
@@ -29,8 +26,9 @@ yarn-error.log*
 # vscode
 .vscode
 
-
-# cypress
+# testing
 cypress/screenshots
 cypress/videos
+cypress/downloads
+/coverage
 .nyc_output

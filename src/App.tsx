@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './App.css';
 import DataDisplay from './components/DataDisplay';
 import Metadata from './components/Metadata';
 import queryString from 'query-string';
@@ -12,32 +11,26 @@ import { ALMA_API_URL, AUTHORITY_API_URL } from './constants';
 
 const queryParams = queryString.parse(window.location.search);
 
-const OuterContainer = styled.div`
-  background-color: #fafafa;
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  right: 0;
-  left: 0;
-`;
-
 const ErrorTextField = styled.div`
   white-space: pre-line;
   font-weight: Bold;
 `;
 
+const StyledContentWrapper = styled.div`
+  margin-left: 1rem;
+`;
+
 const RadioLabel = styled.label`
-  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+`;
+
+const StyledRadioInput = styled.input`
   cursor: pointer;
 `;
 
 const RadioContainer = styled.div`
-  font-family: Barlow, sans-serif;
-  font-size: 1.25rem;
-  margin-right: 1rem;
-  margin-top: 0.5rem;
-  display: inline-block;
-  margin-left: 1rem;
+  margin: 2rem 0 1rem 0;
 `;
 
 const App = () => {
@@ -87,23 +80,29 @@ const App = () => {
   };
 
   return (
-    <OuterContainer>
+    <>
       <Header />
-      {isLoading ? (
-        <h1>Laster data ...</h1>
-      ) : error ? (
+      {error ? (
         <ErrorTextField>{error.message}</ErrorTextField>
+      ) : isLoading ? (
+        <h1>Laster data ...</h1>
       ) : (
         marcData && (
-          <>
+          <StyledContentWrapper>
             <Metadata marcData={marcData} />
             <RadioContainer>
               Velg format:
-              <input aria-labelledby="xml" type="radio" value="xml" checked={showXMLPressed} onChange={showXML} />
+              <StyledRadioInput
+                aria-labelledby="xml"
+                type="radio"
+                value="xml"
+                checked={showXMLPressed}
+                onChange={showXML}
+              />
               <RadioLabel id="xml" onClick={showXML}>
                 XML
               </RadioLabel>
-              <input
+              <StyledRadioInput
                 aria-labelledby="linjeformat"
                 type="radio"
                 value="linjeFormat"
@@ -116,10 +115,10 @@ const App = () => {
             </RadioContainer>
             <DataDisplay marcData={marcData} showAsXMLInput={showXMLPressed} />
             <DataDownload marcData={marcData} />
-          </>
+          </StyledContentWrapper>
         )
       )}
-    </OuterContainer>
+    </>
   );
 };
 

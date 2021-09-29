@@ -4,38 +4,20 @@ import styled from 'styled-components';
 
 const TitleLabel = styled.h1`
   color: rgb(0, 0, 0, 1);
-  font-size: 1.5rem;
-  font-family: Barlow, sans-serif;
   font-weight: Bold;
   line-height: 3rem;
-  letter-spacing: 0.0025em;
-  margin-left: 1rem;
-  margin-right: 1rem;
   border-bottom: 1px solid grey;
 `;
 
-const AuthorLabel = styled.h2`
+const AuthorLabel = styled.span`
   font-size: 1.25rem;
-  font-family: Barlow, sans-serif;
-  font-weight: 500;
-  line-height: 1.6;
-  margin-left: 1rem;
-  margin-top: 0;
-  margin-bottom: 0;
-  display: inline;
+  margin-right: 1rem;
 `;
 
-const YearLabel = styled.h2`
+const YearLabel = styled.span`
   font-size: 1.25rem;
-  font-family: Barlow, sans-serif;
-  font-weight: 500;
-  line-height: 1.6;
-  margin-left: 1rem;
-  margin-top: 0;
-  margin-bottom: 0;
   padding-left: 1rem;
   border-left: 1px solid rgba(0, 0, 0, 0.3);
-  display: inline;
 `;
 
 const extractAuthors = (authors: Author[]) => {
@@ -83,6 +65,7 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
   return (
     <div>
       {title && <TitleLabel aria-label="Title">{title}</TitleLabel>}
+
       {author && <AuthorLabel aria-label="Author">{author}</AuthorLabel>}
       {year && <YearLabel aria-label="Year">{year}</YearLabel>}
     </div>

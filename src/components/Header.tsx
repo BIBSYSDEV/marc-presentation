@@ -1,51 +1,38 @@
-import React, { FC } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import UnitLogo from '../resources/logoUnit.png';
 
-const Bar = styled.div`
+const StyledHeader = styled.div`
   height: 5rem;
   width: 100%;
-  margin-bottom: 1rem;
-  box-shadow: 0 5px 5px grey;
-  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background-color: #c9d2d8;
 `;
 
-const Title = styled.h1`
-  color: rgb(40, 75, 99);
-  position: absolute;
-  font-size: 1.5rem;
+const StyledHeading = styled.div`
+  color: rgb(0, 0, 0);
   font-family: Crimson Text, serif;
+  font-size: 1.5rem;
   font-weight: 400;
   line-height: 5rem;
   margin-left: 1rem;
-  margin-top: 0;
 `;
 
-const Divider = styled.span`
-  line-height: 5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-  padding-right: 1rem;
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
+const StyledLogo = styled.img`
+  margin-right: 1rem;
+  height: auto;
+  max-height: 50%;
 `;
 
-const LogoImgWrapper = styled.img`
-  position: absolute;
-  height: 3rem;
-  width: 10rem;
-  right: 1rem;
-  top: 1rem;
-  line-height: 5rem;
-`;
-
-const Header: FC = () => {
+const Header = () => {
   return (
-    <Bar>
-      <Title>
-        MARC-visning <Divider />
-      </Title>
-      <LogoImgWrapper src={UnitLogo} alt="Unit logo" />
-    </Bar>
+    <StyledHeader data-testid="page-header">
+      <StyledHeading> Marc-visning</StyledHeading>
+      <StyledLogo src={UnitLogo} alt="Unit logo" />
+    </StyledHeader>
   );
 };
 

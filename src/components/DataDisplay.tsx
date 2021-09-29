@@ -1,18 +1,16 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MarcData } from '../types';
 
 const DataField = styled.textarea`
   height: 20rem;
   width: 90%;
-  maring-left: 1rem;
   resize: none;
 `;
 
 const DataFieldWrapper = styled.div`
   height: 20rem;
   width: 90%;
-  margin-left: 1rem;
 `;
 
 interface DataDisplayProps {
@@ -21,7 +19,6 @@ interface DataDisplayProps {
 }
 
 const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
-  const [marcDataReady, setMarcDataReady] = useState(false);
   const [showAsXML, setShowAsXML] = useState(false);
   const [xmlPresentation, setXmlPresentation] = useState('');
   const [linePresentation, setLinePresentation] = useState('');
@@ -37,7 +34,6 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
         ? marcData.linePresentation
         : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
     );
-    setMarcDataReady(true);
     setShowAsXML(showAsXMLInput);
   }, [marcData, showAsXMLInput]);
 
@@ -51,11 +47,7 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
 
   return (
     <DataFieldWrapper>
-      {marcDataReady ? (
-        <DataField value={showData()} readOnly />
-      ) : (
-        <span>Laster {showAsXMLInput ? 'xml' : 'lineformat'} data ...</span>
-      )}
+      <DataField value={showData()} readOnly />
     </DataFieldWrapper>
   );
 };

@@ -5,7 +5,7 @@ import { ALMA_API_URL, AUTHORITY_API_URL } from './constants';
 const mockAlmaResponse = [
   {
     id: '999208985724702201',
-    mainTitle: 'Lensvik indremisjon 100 år :',
+    mainTitle: 'Lensvik indremisjon 101 år :',
     parallelTitle: '1891-1991',
     authors: [
       {
@@ -23,7 +23,9 @@ const mockAlmaResponse = [
   },
 ];
 
-const mockAuthorityResponse = {};
+const mockAuthorityResponse = {
+  //todo
+};
 
 export const interceptRequestsOnMock = () => {
   const mock = new MockAdapter(Axios);
@@ -46,8 +48,8 @@ export const interceptRequestsOnMock = () => {
   //   return [statusCode, mockedResult];
   // };
 
-  mock.onGet(new RegExp(`${ALMA_API_URL}/.*`)).reply(200, mockAlmaResponse);
-  mock.onGet(new RegExp(`${AUTHORITY_API_URL}/.*`)).reply(200, mockAuthorityResponse);
+  mock.onGet(new RegExp(`${ALMA_API_URL}.*`)).reply(200, mockAlmaResponse);
+  mock.onGet(new RegExp(`${AUTHORITY_API_URL}.*`)).reply(200, mockAuthorityResponse);
 
   // ALL OTHER
   mock.onAny().reply(function (config) {

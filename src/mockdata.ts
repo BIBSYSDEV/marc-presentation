@@ -12,7 +12,7 @@ export const mockAlmaResponse = [
         id: '(NO-TrBIB)90386146',
       },
       {
-        name: 'Gabrielsen, Gregor',
+        name: 'Gregorsen, Gregor',
         date: '1940-',
         id: '(NO-TrBIB)90386147',
       },

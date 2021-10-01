@@ -63,7 +63,7 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
   const year = marcData.year !== '' && marcData.year;
 
   return (
-    <div>
+    <>
       {title && (
         <TitleLabel data-testid="metadata-title" aria-label="Title">
           {title}
@@ -79,7 +79,7 @@ const Metadata: FC<MetadataProps> = ({ marcData }) => {
           {year}
         </YearLabel>
       )}
-    </div>
+    </>
   );
 };
 

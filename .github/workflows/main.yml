@@ -7,7 +7,7 @@ jobs:
   auto-merge:
     runs-on: ubuntu-latest
     steps:
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+        with:
+          github-token: ${{ secrets.mytoken }}
 

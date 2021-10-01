@@ -41,6 +41,8 @@ const App = () => {
 
   useEffect(() => {
     const getAndParseXMLData = async () => {
+      setIsLoading(true);
+      setError(undefined);
       let sruUrl = '';
       if (queryParams.auth_id) {
         sruUrl = AUTHORITY_API_URL + '?auth_id=' + queryParams.auth_id;
@@ -55,8 +57,6 @@ const App = () => {
         return;
       }
       try {
-        setIsLoading(true);
-        setError(undefined);
         const response = (await axios.get(sruUrl)).data;
         if (!response[0]) {
           setError(new Error('Failed to retrieve the resource. \nCheck that the input parameter(URL) is correct.'));

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { MarcData } from '../types';
 
@@ -19,35 +19,17 @@ interface DataDisplayProps {
 }
 
 const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
-  const [showAsXML, setShowAsXML] = useState(false);
-  const [xmlPresentation, setXmlPresentation] = useState('');
-  const [linePresentation, setLinePresentation] = useState('');
+  const xmlPresentation = marcData.xmlPresentation
+    ? marcData.xmlPresentation
+    : 'Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page.';
 
-  useEffect(() => {
-    setXmlPresentation(
-      marcData.xmlPresentation
-        ? marcData.xmlPresentation
-        : 'Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
-    );
-    setLinePresentation(
-      marcData.linePresentation
-        ? marcData.linePresentation
-        : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
-    );
-    setShowAsXML(showAsXMLInput);
-  }, [marcData, showAsXMLInput]);
-
-  const showData = (): string => {
-    if (showAsXML) {
-      return xmlPresentation;
-    } else {
-      return linePresentation;
-    }
-  };
+  const linePresentation = marcData.linePresentation
+    ? marcData.linePresentation
+    : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.';
 
   return (
     <DataFieldWrapper>
-      <DataField data-testid="marc-preview" value={showData()} readOnly />
+      <DataField data-testid="marc-preview" value={showAsXMLInput ? xmlPresentation : linePresentation} readOnly />
     </DataFieldWrapper>
   );
 };

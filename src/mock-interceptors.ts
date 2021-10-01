@@ -35,9 +35,9 @@ export const interceptRequestsOnMock = () => {
   mock
     .onGet(new RegExp(`${ALMA_API_URL}\\?mms_id=${mockMmsIdThatTriggersEmptyResponse}`))
     .reply(200, mockAlmaResponseEmpty);
-  mock.onGet(new RegExp(`${ALMA_API_URL}.*`)).reply(200, mockAlmaResponse);
+  mock.onGet(new RegExp(`${ALMA_API_URL}\\?mms_id.*`)).reply(200, mockAlmaResponse);
   mock.onGet(new RegExp(`${AUTHORITY_API_URL}\\?auth_id=${mockAuthIdThatTriggersServerError}`)).reply(500, null);
-  mock.onGet(new RegExp(`${AUTHORITY_API_URL}.*`)).reply(200, mockAuthorityResponse);
+  mock.onGet(new RegExp(`${AUTHORITY_API_URL}\\?auth_id.*`)).reply(200, mockAuthorityResponse);
 
   // ALL OTHER
   mock.onAny().reply(function (config) {

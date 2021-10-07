@@ -6,24 +6,30 @@ interface DataDownloadProps {
   marcData: MarcData;
 }
 
-const Buttons = styled.button`
+const StyledButton = styled.button`
   && {
     background-color: rgb(40, 75, 99);
     border-radius: 5px;
-    border: 1px solid;
-    border-color: rgb(40, 75, 99);
-    margin-left: 1rem;
-    margin-top: 0.7rem;
-    padding: 0.5rem;
-    font-family: Barlow, sans-serif;
-    font-size: 1.1rem;
+    border: none;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
     color: white;
     cursor: pointer;
+
+    &:hover {
+      background-color: rgb(0, 31, 52);
+    }
+
     &:focus {
-      background-color: orange;
+      background-color: rgb(84, 118, 140);
     }
   }
 `;
+
+export const filename_XML_format = 'marcpresentation.xml';
+export const filename_line_format = 'marcpresentation.txt';
 
 const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
   const [xmlContent, setXmlContent] = useState('');
@@ -45,18 +51,21 @@ const DataDownload: FC<DataDownloadProps> = ({ marcData }) => {
   }
 
   const downloadXmlContent = () => {
-    createDownload(xmlContent, 'marcpresentation.xml', 'application/xml');
+    createDownload(xmlContent, filename_XML_format, 'application/xml');
   };
 
   const downloadLineContent = () => {
-    createDownload(lineContent, 'marcpresentation.txt', 'text/plain');
+    createDownload(lineContent, filename_line_format, 'text/plain');
   };
 
   return (
     <>
-      <Buttons onClick={downloadXmlContent}>Last ned XML</Buttons>
-      {'  '}
-      <Buttons onClick={downloadLineContent}>Last ned Linjeformat</Buttons>
+      <StyledButton data-testid="download-xml-format-button" onClick={downloadXmlContent}>
+        Last ned XML
+      </StyledButton>
+      <StyledButton data-testid="download-line-format-button" onClick={downloadLineContent}>
+        Last ned Linjeformat
+      </StyledButton>
     </>
   );
 };

@@ -1,18 +1,16 @@
-import React, { useState, useEffect, FC } from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import { MarcData } from '../types';
 
 const DataField = styled.textarea`
   height: 20rem;
   width: 90%;
-  maring-left: 1rem;
   resize: none;
 `;
 
 const DataFieldWrapper = styled.div`
   height: 20rem;
   width: 90%;
-  margin-left: 1rem;
 `;
 
 interface DataDisplayProps {
@@ -21,41 +19,17 @@ interface DataDisplayProps {
 }
 
 const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
-  const [marcDataReady, setMarcDataReady] = useState(false);
-  const [showAsXML, setShowAsXML] = useState(false);
-  const [xmlPresentation, setXmlPresentation] = useState('');
-  const [linePresentation, setLinePresentation] = useState('');
+  const xmlPresentation = marcData.xmlPresentation
+    ? marcData.xmlPresentation
+    : 'Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page.';
 
-  useEffect(() => {
-    setXmlPresentation(
-      marcData.xmlPresentation
-        ? marcData.xmlPresentation
-        : 'Failed to parse a XML version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
-    );
-    setLinePresentation(
-      marcData.linePresentation
-        ? marcData.linePresentation
-        : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.'
-    );
-    setMarcDataReady(true);
-    setShowAsXML(showAsXMLInput);
-  }, [marcData, showAsXMLInput]);
-
-  const showData = (): string => {
-    if (showAsXML) {
-      return xmlPresentation;
-    } else {
-      return linePresentation;
-    }
-  };
+  const linePresentation = marcData.linePresentation
+    ? marcData.linePresentation
+    : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.';
 
   return (
     <DataFieldWrapper>
-      {marcDataReady ? (
-        <DataField value={showData()} readOnly />
-      ) : (
-        <span>Laster {showAsXMLInput ? 'xml' : 'lineformat'} data ...</span>
-      )}
+      <DataField data-testid="marc-preview" value={showAsXMLInput ? xmlPresentation : linePresentation} readOnly />
     </DataFieldWrapper>
   );
 };

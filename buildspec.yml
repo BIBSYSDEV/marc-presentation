@@ -11,7 +11,6 @@ phases:
       ruby: 2.6
     commands:
       - pip3 install --upgrade cfn-lint
-      #      - pip3 install --upgrade aws-sam-cli
 
       # Install cfn_nag
       - gem install cfn-nag
@@ -37,17 +36,16 @@ phases:
       - cfn-lint # uses .cfnlintrc
 
       # Run cfn-nag (looks for patterns in CFN templates that may indicate insecure infrastructure)
-      - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec)((..*\.y[a]?ml)|(..*\.template))$'
+      - cfn_nag_scan --output-format txt --print-suppression --fail-on-warnings --blacklist-path .cfn_nag_blacklist --input-path . --template-pattern '^(?!.*buildspec.*)((..*\.y[a]?ml)|(..*\.template))$'
 
       - npm install
-      #- npm audit || true # Just log audit info
-  #      - npm audit fix
+
   build:
     commands:
       - echo Build started on `date`
       - echo Building Node app...
       - npm run build
-      - CI=true npm test
+      - npm run test:cypress
 
   post_build:
     commands:
@@ -62,4 +60,4 @@ artifacts:
 
 cache:
   paths:
-    - '/node_modules/**/*' # TODO should we cache this path?
+    - '/node_modules/**/*'

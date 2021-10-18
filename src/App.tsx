@@ -57,7 +57,7 @@ const App = () => {
         return;
       }
       try {
-        const response = (await axios.get(sruUrl)).data;
+        const response = (await axios.get<MarcData[]>(sruUrl)).data;
         if (!response[0]) {
           setError(new Error('Failed to retrieve the resource. \nCheck that the input parameter(URL) is correct.'));
         } else {

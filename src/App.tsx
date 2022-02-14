@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DataDisplay from './components/DataDisplay';
 import Metadata from './components/Metadata';
-import queryString from 'query-string';
 import styled from 'styled-components';
 import { MarcData } from './types';
 import DataDownload from './components/DataDownload';
 import Header from './components/Header';
 import { ALMA_API_URL, AUTHORITY_API_URL } from './constants';
 
-const queryParams = queryString.parse(window.location.search);
+const AUTH_ID_URL_PARAM_NAME = 'auth_id';
+const MMS_ID_URL_PARAM_NAME = 'mms_id';
+const INSTITUTION_URL_PARAM_NAME = 'institution';
 
 const ErrorTextField = styled.div`
   white-space: pre-line;
@@ -41,18 +42,22 @@ const App = () => {
 
   useEffect(() => {
     const getAndParseXMLData = async () => {
+      const urlSearchParams = new URLSearchParams(window.location.search);
+      const authId = urlSearchParams.get(AUTH_ID_URL_PARAM_NAME);
+      const mmsId = urlSearchParams.get(MMS_ID_URL_PARAM_NAME);
+      const institution = urlSearchParams.get(INSTITUTION_URL_PARAM_NAME);
       setIsLoading(true);
       setError(undefined);
       let sruUrl = '';
-      if (queryParams.auth_id) {
-        sruUrl = AUTHORITY_API_URL + '?auth_id=' + queryParams.auth_id;
-      } else if (queryParams.mms_id) {
-        sruUrl = ALMA_API_URL + '?mms_id=' + queryParams.mms_id;
-        if (queryParams.institution) {
-          sruUrl += '&institution=' + queryParams.institution;
+      if (authId) {
+        sruUrl = `${AUTHORITY_API_URL}?${AUTH_ID_URL_PARAM_NAME}=${authId}`;
+      } else if (mmsId) {
+        sruUrl = `${ALMA_API_URL}?${MMS_ID_URL_PARAM_NAME}=${mmsId}`;
+        if (institution) {
+          sruUrl += `&${INSTITUTION_URL_PARAM_NAME}=${institution}`;
         }
       }
-      if (sruUrl === '') {
+      if (!sruUrl) {
         setError(new Error(`Resource not found. \nSearch parameters have not been included in the URL.`));
         return;
       }

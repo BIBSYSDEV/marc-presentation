@@ -1,0 +1,4 @@
+---
+RulesToSuppress:
+- id: W69
+  reason: Accesslogging not required

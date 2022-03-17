@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import SiktLogo from '../resources/Logo-Sikt-Primaerlogo-Moerk_medium_size.png';
+import SiktLogo from '../resources/sikt.svg';
 
 const StyledHeader = styled.div`
   height: 5rem;

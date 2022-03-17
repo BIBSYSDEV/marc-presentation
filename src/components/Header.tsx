@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import UnitLogo from '../resources/logoUnit.png';
+import SiktLogo from '../resources/Logo-Sikt-Primaerlogo-Moerk_medium_size.png';
 
 const StyledHeader = styled.div`
   height: 5rem;
@@ -30,7 +30,7 @@ const Header = () => {
   return (
     <StyledHeader data-testid="page-header">
       <StyledHeading> Marc-visning</StyledHeading>
-      <StyledLogo src={UnitLogo} alt="Unit logo" />
+      <StyledLogo src={SiktLogo} alt="Sikt logo" />
     </StyledHeader>
   );
 };

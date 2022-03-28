@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { MarcData } from '../types';
 
-const DataField = styled.textarea`
+const DataField: any = styled.textarea`
   height: 20rem;
   width: 90%;
   resize: none;
@@ -12,6 +12,8 @@ const DataFieldWrapper = styled.div`
   height: 20rem;
   width: 90%;
 `;
+
+const MarcPostLabel = 'marc-post-label';
 
 interface DataDisplayProps {
   marcData: MarcData;
@@ -28,9 +30,19 @@ const DataDisplay: FC<DataDisplayProps> = ({ marcData, showAsXMLInput }) => {
     : 'Failed to parse a lineformat version. This may be due to an error while contacting the server for parsing, please try to refresh the page.';
 
   return (
-    <DataFieldWrapper>
-      <DataField data-testid="marc-preview" value={showAsXMLInput ? xmlPresentation : linePresentation} readOnly />
-    </DataFieldWrapper>
+    <>
+      <label id={MarcPostLabel}>Marc-post:</label>
+      <DataFieldWrapper>
+        <DataField
+          id="marc-post-textarea"
+          aria-labelledby={MarcPostLabel}
+          readonly
+          data-testid="marc-preview"
+          value={showAsXMLInput ? xmlPresentation : linePresentation}
+          readOnly
+        />
+      </DataFieldWrapper>
+    </>
   );
 };
 

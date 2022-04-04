@@ -3,12 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "react-scripts -r @cypress/instrument-cra start",
     "build": "react-scripts build",
-    "test:cypress": "REACT_APP_USE_MOCK=true start-server-and-test http://localhost:3000",
-    "test": "cypress run",
+    "start": "react-scripts -r @cypress/instrument-cra start",
     "start:development": "env-cmd -f ./.env.development npm run-script start",
-    "start:production": "env-cmd -f ./.env.production npm run-script start"
+    "start:production": "env-cmd -f ./.env.production npm run-script start",
+    "test": "cypress run",
+    "test:cypress": "REACT_APP_USE_MOCK=true start-server-and-test http://localhost:3000"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "dependencies": {
     "axios": "^0.26.1",
@@ -26,26 +38,14 @@
     "@types/react-dom": "^17.0.14",
     "@types/styled-components": "^5.1.24",
     "axios-mock-adapter": "^1.20.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "cypress": "^9.5.3",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
+    "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
     "prettier": "^2.6.1",
     "pretty-quick": "^3.1.3",
-    "typescript": "~4.6.3",
-    "start-server-and-test": "^1.14.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "start-server-and-test": "^1.14.0",
+    "typescript": "~4.6.3"
   }
 }

@@ -34,7 +34,7 @@
     "@cypress/code-coverage": "^3.11.0",
     "@cypress/instrument-cra": "^1.4.0",
     "@types/node": "^20.4.5",
-    "@types/react": "^18.2.14",
+    "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.7",
     "@types/styled-components": "^5.1.26",
     "axios-mock-adapter": "^1.21.5",

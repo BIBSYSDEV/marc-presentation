@@ -12,8 +12,6 @@ phases:
       - pip3 install --upgrade cfn-lint
       - node -v
       - npm -v
-      - npm i -g npm
-      - npm -v
 
   pre_build:
     commands:

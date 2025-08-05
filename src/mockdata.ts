@@ -1,7 +1,7 @@
 export const mockAlmaResponse = [
   {
     id: '999208985724702201',
-    mainTitle: 'LLLLLensvik indremisjon 101 år :',
+    mainTitle: 'Lensvik indremisjon 101 år :',
     parallelTitle: '1891-1991',
     numberOfPartTitle: 'test',
     statementOfResponsibility: 'more test',

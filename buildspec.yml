@@ -7,7 +7,7 @@ env:
 phases:
   install:
     runtime-versions:
-      nodejs: 16
+      nodejs: 22
     commands:
       - pip3 install --upgrade cfn-lint
       - node -v

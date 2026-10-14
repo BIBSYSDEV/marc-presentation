@@ -8,7 +8,8 @@
     "start:development": "env-cmd -f ./.env.development npm run-script start",
     "start:production": "env-cmd -f ./.env.production npm run-script start",
     "test": "cypress run",
-    "test:cypress": "REACT_APP_USE_MOCK=true start-server-and-test http://localhost:3000"
+    "test:cypress": "REACT_APP_USE_MOCK=true start-server-and-test http://localhost:3000",
+    "cypress:install": "cypress install"
   },
   "browserslist": {
     "production": [
@@ -47,5 +48,11 @@
     "pretty-quick": "^3.3.1",
     "start-server-and-test": "^3.0.11",
     "typescript": "~4.9.5"
+  },
+  "allowScripts": {
+    "core-js": false,
+    "core-js-pure": false,
+    "cypress": false,
+    "fsevents": false
   }
 }

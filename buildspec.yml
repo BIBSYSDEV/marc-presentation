@@ -9,7 +9,8 @@ phases:
     runtime-versions:
       nodejs: 22
     commands:
-      - pip3 install --upgrade cfn-lint
+      - pip3 install cfn-lint==1.57.2
+      - npm install -g npm@12.2.0
       - node -v
       - npm -v
 
@@ -21,7 +22,6 @@ phases:
       - echo $CODEBUILD_WEBHOOK_TRIGGER
       - echo $CODEBUILD_WEBHOOK_BASE_REF
       - echo $CODEBUILD_SRC_DIR
-      - node -v
       - aws --version
       - cfn-lint -v
 
@@ -29,6 +29,7 @@ phases:
       - cfn-lint # uses .cfnlintrc
 
       - npm ci
+      - npm run cypress:install
 
   build:
     commands:
@@ -50,4 +51,5 @@ artifacts:
 
 cache:
   paths:
-    - '/node_modules/**/*'
+    - '/root/.npm/**/*'
+    - '/root/.cache/Cypress/**/*'

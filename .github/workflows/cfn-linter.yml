@@ -13,10 +13,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Cloud Formation Linter with Latest Version
-        uses: scottbrenner/cfn-lint-action@9636da81fb2e0cef75725d8dda11b0148940b7ae # v.2.6.0
+        uses: scottbrenner/cfn-lint-action@8affffc34dddd6937bbc37f60901f71657e20fab # v2.8.0
+        with:
+          version: "1.57.2"
 
       - name: Run cfn-lint on template and pipeline
         run: |

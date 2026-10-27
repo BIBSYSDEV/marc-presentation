@@ -1,34 +1,40 @@
 name: JavaScript CI with NPM and Node
 
 permissions:
-  contents: read          # To read source code
-  checks: write           # To publish test results
-  pull-requests: write    # To comment on PRs
+  contents: read
 
 on: [ push, pull_request ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
-      - name: Set up Node 22
-        uses: actions/setup-node@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: 22
+          persist-credentials: false
 
-      - name: Cache node_modules
-        uses: actions/cache@v4
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('package-lock.json') }}
+          node-version-file: .nvmrc
+          cache: npm # cacher ~/.npm, nøkkel fra package-lock.json
+
+      - name: Install npm 12
+        run: npm install -g npm@12.2.0
+
+      - name: Cache Cypress binary
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-${{ hashFiles('package-lock.json') }}
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm run cypress:install
 
-      - name: Build and test with NPM
+      - name: Build and test
         run: |
           npm run build
           npm run test:cypress

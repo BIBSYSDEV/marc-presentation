@@ -9,6 +9,7 @@ phases:
     runtime-versions:
       nodejs: 22
     commands:
+      - n 22.23.4
       - pip3 install cfn-lint==1.57.2
       - npm install -g npm@12.2.0
       - node -v

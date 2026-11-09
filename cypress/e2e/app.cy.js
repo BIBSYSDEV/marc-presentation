@@ -11,9 +11,6 @@ import path from 'path';
 const downloadsFolder = Cypress.config('downloadsFolder');
 
 context('application', () => {
-  before('Clear downloads folder', () => {
-    cy.exec(`rm ${downloadsFolder}/*`, { log: true, failOnNonZeroExit: false });
-  });
 
   it('successfully shows a full page with data from alma-api', () => {
     cy.visit('?mms_id=543543534');
